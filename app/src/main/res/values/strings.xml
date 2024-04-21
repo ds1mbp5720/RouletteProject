@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">RouletteProject</string>
+    <string name="bottom_main">Roulette</string>
+    <string name="bottom_manage">Manage</string>
+</resources>
