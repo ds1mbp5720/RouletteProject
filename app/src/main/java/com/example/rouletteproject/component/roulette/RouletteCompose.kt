@@ -1,5 +1,6 @@
 package com.example.rouletteproject.component.roulette
 
+import android.util.Log
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -54,6 +55,8 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
 import kotlin.math.cos
 import kotlin.math.sin
@@ -67,25 +70,16 @@ private val rouletteSize = 400.dp
  */
 @Composable
 fun RouletteScreen(
+    mainViewModel: MainViewModel = viewModel(),
     rouletteList: List<String> // todo viewModel로 받아서 flow 감지하기
 ) {
+    Log.e("","mainViewModel 길이 ${mainViewModel.getAllRoulette().value?.size}")
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var rotationValue by remember { mutableFloatStateOf(0f) }// 회전 각도
         var resultPosition by remember { mutableIntStateOf(0) }
-        val angle: Float by animateFloatAsState(
-            targetValue = rotationValue,
-            animationSpec = tween(
-                durationMillis = 2000, //todo 시간 설정 별도로 받기 고려
-                easing = LinearOutSlowInEasing
-            ),
-            finishedListener = {
-                //todo 룰렛 완료 후 동작
-            },
-            label = ""
-        )
+
         // todo add googleAdMob
         Spacer(modifier = Modifier.height(25.dp))
         ResultTextView(
@@ -96,18 +90,9 @@ fun RouletteScreen(
         BasicRoulette(
             modifier = Modifier,
             rouletteList = rouletteList,
-            angle = angle,
             selectDegree = 270,
-            centerPosition = {
-                resultPosition = it
-            }
         ) {
-            val check: Boolean = rotationValue in Float.MAX_VALUE - 5000f..Float.MAX_VALUE
-            rotationValue = if (check) {
-                0f
-            } else {
-                (720..1080).random().toFloat() + angle
-            }
+            resultPosition = it
         }
     }
 }
@@ -116,11 +101,23 @@ fun RouletteScreen(
 fun BasicRoulette(
     modifier: Modifier = Modifier,
     rouletteList: List<String>,
-    angle: Float,
     selectDegree: Int,
     centerPosition: (Int) -> Unit, // 270 도 (상단 기준)
-    playClickEvent: () -> Unit
 ) {
+    var rotationValue by remember { mutableFloatStateOf(0f) }// 회전 각도
+    var rotateIng by remember { mutableStateOf(false) } // 회전 중일때만 결과 값 반환을 위한 회전 동작 구분 boolean 변수
+    val angle: Float by animateFloatAsState(
+        targetValue = rotationValue,
+        animationSpec = tween(
+            durationMillis = 2000, //todo 시간 설정 별도로 받기 고려
+            easing = LinearOutSlowInEasing
+        ),
+        finishedListener = {
+            //todo 룰렛 완료 후 동작
+            rotateIng = false
+        },
+        label = ""
+    )
     Box(
         modifier = modifier
     ) {
@@ -134,6 +131,7 @@ fun BasicRoulette(
             rouletteList = rouletteList,
             rouletteSize = rouletteList.size,
             angle = angle,
+            rotateIng = rotateIng,
             selectDegree = selectDegree,
             centerPosition = centerPosition
         )
@@ -157,7 +155,15 @@ fun BasicRoulette(
                     shape = CircleShape
                 )
                 .align(Alignment.Center),
-            onClick = playClickEvent
+            onClick ={
+                rotateIng = true
+                val check: Boolean = rotationValue in Float.MAX_VALUE - 5000f..Float.MAX_VALUE
+                rotationValue = if (check) {
+                    0f
+                } else {
+                    (720..1080).random().toFloat() + angle
+                }
+            }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_play_circle_24),
@@ -177,6 +183,7 @@ fun RouletteView(
     rouletteList: List<String>,
     rouletteSize: Int,
     angle: Float,
+    rotateIng: Boolean,
     selectDegree: Int,
     centerPosition: (Int) -> Unit, // 270 도 (상단 기준)
 ) {
@@ -213,7 +220,8 @@ fun RouletteView(
             }
             // 회전 각도(selectDegree)가 부채꼴 시작과 끝 사이에 있을때 해당 i 값 반환
             if (changeRotate <= selectDegree && changeRotate + sweepAngle >= selectDegree) {
-                centerPosition.invoke(i)
+                if(rotateIng)
+                    centerPosition.invoke(i)
             }
             // draw roulette text
             val rotateAngle = startAngle + (sweepAngle / 2)
