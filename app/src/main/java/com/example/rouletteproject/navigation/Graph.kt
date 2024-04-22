@@ -28,7 +28,9 @@ fun NavigationGraph(navController: NavHostController) {
         startDestination = BottomNavItem.Roulette.screenRoute
     ) {
         composable(BottomNavItem.Roulette.screenRoute) {
-            RouletteScreen()
+            RouletteScreen(
+                rouletteList = listOf("a","b","c","d","f","g","h","i") // todo viewModel로 변경
+            )
         }
         composable(BottomNavItem.ManageList.screenRoute) {
             ManageListScreen()
