@@ -3,17 +3,17 @@ package com.example.data.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.data.entity.RouletteEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RouletteDao {
     @Query("SELECT * FROM Roulette")
-    fun getRouletteList(): LiveData<List<RouletteEntity>>
+    fun getRouletteList(): Flow<List<RouletteEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insertRoulette(roulette: RouletteEntity)
 
     @Update

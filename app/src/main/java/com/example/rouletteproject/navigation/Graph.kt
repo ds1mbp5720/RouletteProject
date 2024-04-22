@@ -33,7 +33,7 @@ fun NavigationGraph(
     ) {
         composable(BottomNavItem.Roulette.screenRoute) {
             RouletteScreen(
-                //mainViewModel = mainViewModel,
+                mainViewModel = mainViewModel,
                 rouletteList = listOf("a","b","c","d","f","g","h","i") // todo viewModel로 변경
             )
         }

@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +57,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
 import kotlin.math.cos
@@ -70,10 +72,10 @@ private val rouletteSize = 400.dp
  */
 @Composable
 fun RouletteScreen(
-    mainViewModel: MainViewModel = viewModel(),
+    mainViewModel: MainViewModel,
     rouletteList: List<String> // todo viewModel로 받아서 flow 감지하기
 ) {
-    Log.e("","mainViewModel 길이 ${mainViewModel.getAllRoulette().value?.size}")
+    val rouletteLists = mainViewModel.rouletteList.observeAsState().value
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -93,6 +95,20 @@ fun RouletteScreen(
             selectDegree = 270,
         ) {
             resultPosition = it
+        }
+        Spacer(modifier = Modifier.height(30.dp))
+        Button(
+            onClick = {
+                mainViewModel.insert(
+                    RouletteEntity(
+                        id = (720..1080).random(),
+                        title = "test",
+                        rouletteData = listOf("a","b","c","d","f","g","h","i")
+                    )
+                )
+                Log.e("","mainViewModel 길이 체크 ${rouletteLists?.get(0)?.title}")
+            }) {
+            Text(text = "test roomDB Add")
         }
     }
 }

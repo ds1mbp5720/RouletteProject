@@ -9,7 +9,7 @@ import com.example.data.converter.ListConverters
 import com.example.data.dao.RouletteDao
 import com.example.data.entity.RouletteEntity
 
-@Database(entities = [RouletteEntity::class], version = 0, exportSchema = false)
+@Database(entities = [RouletteEntity::class], version = 1, exportSchema = false)
 @TypeConverters(ListConverters::class) // list 사용을 위한 converter
 abstract class RouletteDataBase : RoomDatabase() {
     abstract fun getRouletteDao(): RouletteDao
