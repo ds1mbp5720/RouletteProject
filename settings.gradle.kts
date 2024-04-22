@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "RouletteProject"
 include(":app")
- 
+include(":data")

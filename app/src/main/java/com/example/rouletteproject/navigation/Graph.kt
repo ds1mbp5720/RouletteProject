@@ -18,17 +18,22 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.component.roulette.RouletteScreen
 import com.example.rouletteproject.managelist.ManageListScreen
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(
+    navController: NavHostController,
+    mainViewModel: MainViewModel
+) {
     NavHost(
         navController = navController,
         startDestination = BottomNavItem.Roulette.screenRoute
     ) {
         composable(BottomNavItem.Roulette.screenRoute) {
             RouletteScreen(
+                //mainViewModel = mainViewModel,
                 rouletteList = listOf("a","b","c","d","f","g","h","i") // todo viewModel로 변경
             )
         }

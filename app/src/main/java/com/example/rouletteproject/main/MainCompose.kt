@@ -1,4 +1,4 @@
-package com.example.rouletteproject
+package com.example.rouletteproject.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +8,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.navigation.BottomNavigation
 import com.example.rouletteproject.navigation.NavigationGraph
 
@@ -19,12 +21,16 @@ fun MainScreen() {
     Scaffold(
         bottomBar = { BottomNavigation(navController = navController) }
     ) {
+        val mainViewModel: MainViewModel = viewModel()
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
         ){
-            NavigationGraph(navController = navController)
+            NavigationGraph(
+                navController = navController,
+                mainViewModel = mainViewModel
+            )
         }
     }
 }
