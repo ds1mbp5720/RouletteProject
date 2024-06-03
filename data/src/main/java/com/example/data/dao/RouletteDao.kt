@@ -20,5 +20,5 @@ interface RouletteDao {
     fun update(roulette: RouletteEntity)
 
     @Query("DELETE FROM Roulette WHERE id = :id")
-    fun delete(id: Int)
+    fun delete(id: Long)
 }

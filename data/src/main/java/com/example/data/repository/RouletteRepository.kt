@@ -17,15 +17,23 @@ class RouletteRepository(application: Application) {
         try {
             rouletteDao.insertRoulette(roulette = roulette)
         } catch (e: Exception) {
-            Log.e("","mainViewModel error $e")
+            Log.e("","mainViewModel(insert) error $e")
         }
     }
 
-    fun delete(id: Int) {
+    fun update(roulette: RouletteEntity) {
+        try {
+            rouletteDao.update(roulette = roulette)
+        } catch (e: Exception) {
+            Log.e("","mainViewModel(update) error $e")
+        }
+    }
+
+    fun delete(id: Long) {
         try {
             rouletteDao.delete(id)
         } catch (e: Exception) {
-            Log.e("","mainViewModel error $e")
+            Log.e("","mainViewModel(delete) error $e")
         }
     }
 }

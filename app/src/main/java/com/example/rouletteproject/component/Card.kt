@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
@@ -27,8 +28,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun RouletteCard(
     modifier: Modifier = Modifier,
+    updateEnable: Boolean = false,
     text: String,
-    onDeleteClick: () -> Unit
+    onDeleteClick: (String) -> Unit
 ) {
     Card(
         modifier = modifier
@@ -52,7 +54,7 @@ fun RouletteCard(
             Icon(
                 modifier = Modifier
                     .clickable {
-                        onDeleteClick.invoke()
+                        onDeleteClick.invoke(text)
                     },
                 imageVector = Icons.Filled.Clear,
                 contentDescription = "search_history_delete"

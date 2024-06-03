@@ -1,10 +1,12 @@
 package com.example.rouletteproject.component.roulette
 
+import android.util.Log
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +51,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
 import com.example.rouletteproject.component.RouletteCard
@@ -73,12 +76,19 @@ fun RouletteScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var resultPosition by remember { mutableIntStateOf(0) }
-
+        var selectRoulette: RouletteEntity? by remember { mutableStateOf(rouletteLists?.get(0)) }  // todo 0 대신 마지막 선택한 index 활용
         // todo add googleAdMob
         Spacer(modifier = Modifier.height(25.dp))
         ResultTextView(
             modifier = Modifier,
-            result =  stringResource(id = R.string.text_result, rouletteList[resultPosition])
+            result = stringResource(
+                id = R.string.text_result,
+                if (selectRoulette != null) {
+                    selectRoulette!!.rouletteData[resultPosition]
+                } else {
+                    "선택한 리스트가 없습니다."
+                }
+            )
         )
         Spacer(modifier = Modifier.height(35.dp))
         BasicRoulette(
@@ -89,17 +99,21 @@ fun RouletteScreen(
             resultPosition = it
         }
         Spacer(modifier = Modifier.height(30.dp))
-        if(rouletteLists?.isNotEmpty() == true) {
+        if (rouletteLists?.isNotEmpty() == true) {
             rouletteLists.forEach { rouletteData ->
-                RouletteListFlow(
-                    rouletteList = rouletteData.rouletteData
-                ) {
+                RouletteCard(
+                    modifier = Modifier
+                        .clickable {
+                            selectRoulette = rouletteData
+                        },
+                    text = rouletteData.title,
+                ) { //todo 해당 부분은 수정 다이얼로그 방식으로 변경하기
 
                 }
             }
         } else {
             Text(
-                text ="저장된 리스트가 없습니다."
+                text = "저장된 리스트가 없습니다."
             )
         }
 
@@ -164,7 +178,7 @@ fun BasicRoulette(
                     shape = CircleShape
                 )
                 .align(Alignment.Center),
-            onClick ={
+            onClick = {
                 rotateIng = true
                 val check: Boolean = rotationValue in Float.MAX_VALUE - 5000f..Float.MAX_VALUE
                 rotationValue = if (check) {
@@ -229,7 +243,7 @@ fun RouletteView(
             }
             // 회전 각도(selectDegree)가 부채꼴 시작과 끝 사이에 있을때 해당 i 값 반환
             if (changeRotate <= selectDegree && changeRotate + sweepAngle >= selectDegree) {
-                if(rotateIng)
+                if (rotateIng)
                     centerPosition.invoke(i)
             }
             // draw roulette text
@@ -298,7 +312,7 @@ fun ResultTextView(
 fun RouletteListFlow(
     modifier: Modifier = Modifier,
     rouletteList: List<String>,
-    onDeleteClick: () -> Unit
+    onDeleteClick: (String) -> Unit
 ) {
     FlowRow(
         modifier = modifier

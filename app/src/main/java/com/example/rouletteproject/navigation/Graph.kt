@@ -39,8 +39,7 @@ fun NavigationGraph(
         }
         composable(BottomNavItem.ManageList.screenRoute) {
             ManageListScreen(
-                mainViewModel = mainViewModel,
-                rouletteList = listOf("a","b","c","d","f","g","h","i") // todo viewModel로 변경
+                mainViewModel = mainViewModel
             )
         }
     }

@@ -24,9 +24,15 @@ class MainViewModel(
         }
     }
 
-    fun delete(id: Int) {
+    fun delete(id: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.delete(id)
+        }
+    }
+
+    fun update(roulette: RouletteEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.update(roulette)
         }
     }
 }
