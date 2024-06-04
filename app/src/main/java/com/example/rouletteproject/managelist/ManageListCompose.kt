@@ -11,22 +11,31 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
+import com.example.rouletteproject.R
 import com.example.rouletteproject.component.RouletteCard
+import com.example.rouletteproject.dialog.InsertRouletteListDialog
 
 /**
  * 룰렛 내부 리스트 관리 화면
@@ -36,40 +45,48 @@ import com.example.rouletteproject.component.RouletteCard
 fun ManageListScreen(
     mainViewModel: MainViewModel
 ) {
+    val scrollState = rememberScrollState()
     val rouletteLists = mainViewModel.rouletteList.observeAsState().value
+    var showInsertDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
+            .verticalScroll(scrollState)
             .padding(horizontal = 8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
             onClick = {
-                mainViewModel.insert(
-                    RouletteEntity(
-                        id = System.currentTimeMillis(),
-                        title = "test",
-                        rouletteData = listOf("a","b","c","d","f","g","h","i")
-                    )
-                )
+                showInsertDialog = true
             }) {
-            Text(text = "test roomDB Add")
+            Text(text = stringResource(id = R.string.btn_add_list))
         }
         Spacer(modifier = Modifier.height(20.dp))
-        rouletteLists?.forEach {rouletteData ->
+        rouletteLists?.forEach { rouletteData ->
             RouletteItemBox(
                 title = rouletteData.title,
                 rouletteList = rouletteData.rouletteData,
-                itemDeleteClick = { removeString ->
-                    // 룰렛 구성 string 중 선택한 it 지우는 동작
+                itemUpdate = { index, updateString ->
                     val updateList = mutableListOf<String>()
                     updateList.addAll(rouletteData.rouletteData)
-                    updateList.remove(removeString)
+                    updateList[index] = updateString
                     mainViewModel.update(
                         RouletteEntity(
                             id = rouletteData.id,
                             title = rouletteData.title,
                             rouletteData = updateList
+                        )
+                    )
+                },
+                itemDeleteClick = { removeString ->
+                    val removedList = mutableListOf<String>()
+                    removedList.addAll(rouletteData.rouletteData)
+                    removedList.remove(removeString)
+                    mainViewModel.update(
+                        RouletteEntity(
+                            id = rouletteData.id,
+                            title = rouletteData.title,
+                            rouletteData = removedList
                         )
                     )
                 }
@@ -78,8 +95,25 @@ fun ManageListScreen(
             }
             Spacer(modifier = Modifier.height(15.dp))
         }
+        if (showInsertDialog) {
+            InsertRouletteListDialog(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp, vertical = 50.dp),
+                addRouletteList = { title, rouletteList ->
+                    mainViewModel.insert(
+                        RouletteEntity(
+                            id = System.currentTimeMillis(),
+                            title = title,
+                            rouletteData = rouletteList
+                        )
+                    )
+                }
+            ) {
+                showInsertDialog = false
+            }
+        }
     }
-
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -88,6 +122,7 @@ fun RouletteItemBox(
     modifier: Modifier = Modifier,
     title: String,
     rouletteList: List<String>,
+    itemUpdate: (Int, String) -> Unit,
     itemDeleteClick: (String) -> Unit,
     rouletteDeleteClick: () -> Unit
 ) {
@@ -128,6 +163,9 @@ fun RouletteItemBox(
                 RouletteCard(
                     updateEnable = true,
                     text = rouletteList[index],
+                    onUpdateList = {
+                        itemUpdate(index, it)
+                    },
                     onDeleteClick = {
                         itemDeleteClick.invoke(it)
                     }
@@ -143,7 +181,8 @@ fun PreViewItemBox() {
     RouletteItemBox(
         modifier = Modifier,
         title = "Test Title",
-        rouletteList = listOf("a","b","c","d","f","g","h","i"),
+        rouletteList = listOf("a", "b", "c", "d", "f", "g", "h", "i"),
+        itemUpdate = {index, update ->},
         itemDeleteClick = { }
     ) { }
 }

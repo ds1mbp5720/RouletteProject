@@ -1,17 +1,13 @@
 package com.example.rouletteproject.component.roulette
 
-import android.util.Log
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -86,7 +82,7 @@ fun RouletteScreen(
                 if (selectRoulette != null) {
                     selectRoulette!!.rouletteData[resultPosition]
                 } else {
-                    "선택한 리스트가 없습니다."
+                    stringResource(id = R.string.text_none_select)
                 }
             )
         )
@@ -99,6 +95,7 @@ fun RouletteScreen(
             resultPosition = it
         }
         Spacer(modifier = Modifier.height(30.dp))
+        // 저장된 룰렛 리스트 선택 목적 제목 리스트
         if (rouletteLists?.isNotEmpty() == true) {
             rouletteLists.forEach { rouletteData ->
                 RouletteCard(
@@ -113,7 +110,7 @@ fun RouletteScreen(
             }
         } else {
             Text(
-                text = "저장된 리스트가 없습니다."
+                text = stringResource(id = R.string.text_none_list)
             )
         }
 
@@ -301,30 +298,5 @@ fun ResultTextView(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineLarge
         )
-    }
-}
-
-/**
- * 저장된 룰렛 리스트 선택 flow list view
- */
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-fun RouletteListFlow(
-    modifier: Modifier = Modifier,
-    rouletteList: List<String>,
-    onDeleteClick: (String) -> Unit
-) {
-    FlowRow(
-        modifier = modifier
-            .padding(horizontal = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp)
-    ) {
-        repeat(rouletteList.size) { index ->
-            RouletteCard(
-                text = rouletteList[index],
-                onDeleteClick = onDeleteClick
-            )
-        }
     }
 }
