@@ -31,10 +31,10 @@ fun NavigationGraph(
         navController = navController,
         startDestination = BottomNavItem.Roulette.screenRoute
     ) {
+        mainViewModel.getAllList()
         composable(BottomNavItem.Roulette.screenRoute) {
             RouletteScreen(
-                mainViewModel = mainViewModel,
-                rouletteList = listOf("a","b","c","d","f","g","h","i") // todo viewModel로 변경
+                mainViewModel = mainViewModel
             )
         }
         composable(BottomNavItem.ManageList.screenRoute) {

@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,7 +41,8 @@ fun InsertRouletteListDialog(
     dismissRequest: () -> Unit
 ) {
     val context = LocalContext.current
-    val rouletteList by remember { mutableStateOf(mutableListOf<String>()) }
+    val rouletteSize = remember { mutableStateOf(0) }
+    val rouletteList = mutableListOf<String>()
     val title = remember { mutableStateOf("") }
     Dialog(
         onDismissRequest = dismissRequest
@@ -71,7 +71,7 @@ fun InsertRouletteListDialog(
                 }
             }
             BasicDivider()
-            if(rouletteList.size > 0 ) {
+            if(rouletteSize.value > 0 ) {
                 FlowRow(
                     modifier = modifier
                         .padding(horizontal = 10.dp),
@@ -83,7 +83,7 @@ fun InsertRouletteListDialog(
                             updateEnable = true,
                             text = rouletteList[index],
                             onUpdateList = {
-
+                                rouletteList[index] = it
                             },
                             onDeleteClick = {
                                 rouletteList.remove(it)
@@ -96,7 +96,8 @@ fun InsertRouletteListDialog(
             }
             IconButton(
                 onClick = {
-                    rouletteList.add(" ") // todo 초기 룰렛 칸 생성 방식 수정 필요
+                    rouletteSize.value ++
+                    rouletteList.add("")
             }) {
                 Icon(
                     imageVector = Icons.Filled.Add,
@@ -139,9 +140,5 @@ fun BasicDivider(
 @Preview
 @Composable
 fun dialogPreview() {
-    InsertRouletteListDialog(addRouletteList = { title, rouletteList ->
-
-    }) {
-
-    }
+    InsertRouletteListDialog(addRouletteList = { title, rouletteList -> }) {}
 }

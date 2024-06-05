@@ -17,6 +17,11 @@ class MainViewModel(
     private val repository = RouletteRepository(application)
     val rouletteList: LiveData<List<RouletteEntity>> = repository.allRoulette.asLiveData()
 
+    fun getAllList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getAllList()
+        }
+    }
 
     fun insert(roulette: RouletteEntity) {
         viewModelScope.launch(Dispatchers.IO) {

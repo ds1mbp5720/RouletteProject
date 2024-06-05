@@ -13,6 +13,14 @@ class RouletteRepository(application: Application) {
     private val rouletteDao: RouletteDao = rouletteDataBase.getRouletteDao()
     val allRoulette: Flow<List<RouletteEntity>> = rouletteDao.getRouletteList()
 
+    fun getAllList(){
+        try {
+            rouletteDao.getRouletteList()
+        }catch (e: Exception) {
+            Log.e("","mainViewModel(get) error $e")
+        }
+    }
+
     fun insert(roulette: RouletteEntity) {
         try {
             rouletteDao.insertRoulette(roulette = roulette)

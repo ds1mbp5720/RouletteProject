@@ -63,8 +63,7 @@ private val rouletteSize = 400.dp
  */
 @Composable
 fun RouletteScreen(
-    mainViewModel: MainViewModel,
-    rouletteList: List<String> // todo viewModel로 받아서 flow 감지하기
+    mainViewModel: MainViewModel
 ) {
     val rouletteLists = mainViewModel.rouletteList.observeAsState().value
     Column(
@@ -72,7 +71,16 @@ fun RouletteScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var resultPosition by remember { mutableIntStateOf(0) }
-        var selectRoulette: RouletteEntity? by remember { mutableStateOf(rouletteLists?.get(0)) }  // todo 0 대신 마지막 선택한 index 활용
+        var selectRoulette: RouletteEntity by remember {
+            mutableStateOf(
+                rouletteLists?.get(0) // todo 0 대신 마지막 선택한 index 활용
+                    ?: RouletteEntity(
+                        id = 0,
+                        title = "Basic",
+                        rouletteData = listOf("a", "b", "c")
+                    )
+            )
+        }
         // todo add googleAdMob
         Spacer(modifier = Modifier.height(25.dp))
         ResultTextView(
@@ -87,12 +95,14 @@ fun RouletteScreen(
             )
         )
         Spacer(modifier = Modifier.height(35.dp))
-        BasicRoulette(
-            modifier = Modifier,
-            rouletteList = rouletteList,
-            selectDegree = 270,
-        ) {
-            resultPosition = it
+        selectRoulette?.let {
+            BasicRoulette(
+                modifier = Modifier,
+                rouletteList = it.rouletteData,
+                selectDegree = 270,
+            ) {
+                resultPosition = it
+            }
         }
         Spacer(modifier = Modifier.height(30.dp))
         // 저장된 룰렛 리스트 선택 목적 제목 리스트
@@ -102,6 +112,7 @@ fun RouletteScreen(
                     modifier = Modifier
                         .clickable {
                             selectRoulette = rouletteData
+                            resultPosition = 0
                         },
                     text = rouletteData.title,
                 ) { //todo 해당 부분은 수정 다이얼로그 방식으로 변경하기
