@@ -2,8 +2,8 @@ package com.example.rouletteproject.navigation
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.rouletteproject.MainViewModel
+import com.example.rouletteproject.component.card.CardScreen
 import com.example.rouletteproject.component.roulette.RouletteScreen
 import com.example.rouletteproject.managelist.ManageListScreen
 
@@ -37,6 +38,11 @@ fun NavigationGraph(
                 mainViewModel = mainViewModel
             )
         }
+        composable(BottomNavItem.Card.screenRoute) {
+            CardScreen(
+                mainViewModel = mainViewModel
+            )
+        }
         composable(BottomNavItem.ManageList.screenRoute) {
             ManageListScreen(
                 mainViewModel = mainViewModel
@@ -47,8 +53,9 @@ fun NavigationGraph(
 
 @Composable
 fun BottomNavigation(navController: NavHostController) {
-    val items = listOf<BottomNavItem>(
+    val items = listOf(
         BottomNavItem.Roulette,
+        BottomNavItem.Card,
         BottomNavItem.ManageList
     )
 

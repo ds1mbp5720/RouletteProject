@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 
 object MainDestination {
     const val ROULETTE = "roulette"
+    const val CARD = "card"
     const val MANAGE = "manage"
 }
 

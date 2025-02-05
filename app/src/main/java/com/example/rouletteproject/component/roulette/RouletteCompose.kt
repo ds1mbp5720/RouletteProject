@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
-import com.example.rouletteproject.component.RouletteCard
+import com.example.rouletteproject.component.RouletteItem
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -103,7 +103,7 @@ fun RouletteScreen(
         // 저장된 룰렛 리스트 선택 목적 제목 리스트
         if (rouletteLists?.isNotEmpty() == true) {
             rouletteLists.forEach { rouletteData ->
-                RouletteCard(
+                RouletteItem(
                     modifier = Modifier
                         .clickable {
                             selectRoulette = rouletteData

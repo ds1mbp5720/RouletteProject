@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
  * 리스트 index 별 표시 CardView
  */
 @Composable
-fun RouletteCard(
+fun RouletteItem(
     modifier: Modifier = Modifier,
     updateEnable: Boolean = false,
     text: String,

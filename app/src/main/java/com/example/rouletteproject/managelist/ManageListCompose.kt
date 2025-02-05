@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
-import com.example.rouletteproject.component.RouletteCard
+import com.example.rouletteproject.component.RouletteItem
 import com.example.rouletteproject.dialog.InsertRouletteListDialog
 
 /**
@@ -160,7 +160,7 @@ fun RouletteItemBox(
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             repeat(rouletteList.size) { index ->
-                RouletteCard(
+                RouletteItem(
                     updateEnable = true,
                     text = rouletteList[index],
                     onUpdateList = {
