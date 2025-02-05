@@ -37,6 +37,7 @@ fun RouletteCard(
     onDeleteClick: (String) -> Unit
 ) {
     val textState = remember { mutableStateOf(text) }
+    textState.value = text // 해당 카드뷰 제거 동작시 리스트값은 갱신되나 state 부분의 remember로 인해 값 다시 초기화 동작
     Card(
         modifier = modifier
             .widthIn(min = 50.dp)
@@ -74,7 +75,7 @@ fun RouletteCard(
             Icon(
                 modifier = Modifier
                     .clickable {
-                        onDeleteClick.invoke(text)
+                        onDeleteClick.invoke(textState.value)
                     },
                 imageVector = Icons.Filled.Clear,
                 contentDescription = "search_history_delete"

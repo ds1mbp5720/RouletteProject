@@ -2,14 +2,14 @@ package com.example.rouletteproject.dialog
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -20,10 +20,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -33,7 +35,6 @@ import androidx.compose.ui.window.Dialog
 import com.example.rouletteproject.R
 import com.example.rouletteproject.component.RouletteCard
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun InsertRouletteListDialog(
     modifier: Modifier = Modifier,
@@ -41,8 +42,7 @@ fun InsertRouletteListDialog(
     dismissRequest: () -> Unit
 ) {
     val context = LocalContext.current
-    val rouletteSize = remember { mutableStateOf(0) }
-    val rouletteList = mutableListOf<String>()
+    val rouletteList = remember { mutableStateListOf<String>() }
     val title = remember { mutableStateOf("") }
     Dialog(
         onDismissRequest = dismissRequest
@@ -62,7 +62,7 @@ fun InsertRouletteListDialog(
                 },
                 singleLine = true,
                 textStyle = MaterialTheme.typography.titleMedium
-            ) {innerTextField ->
+            ) { innerTextField ->
                 innerTextField()
                 if(title.value.isEmpty()) {
                     Text(
@@ -71,12 +71,11 @@ fun InsertRouletteListDialog(
                 }
             }
             BasicDivider()
-            if(rouletteSize.value > 0 ) {
-                FlowRow(
+            if(rouletteList.size > 0 ) {
+                Column(
                     modifier = modifier
                         .padding(horizontal = 10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     repeat(rouletteList.size) { index ->
                         RouletteCard(
@@ -92,16 +91,21 @@ fun InsertRouletteListDialog(
                     }
                 }
             } else {
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(10.dp))
             }
             IconButton(
                 onClick = {
-                    rouletteSize.value ++
                     rouletteList.add("")
             }) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "add_string"
+                    contentDescription = "add_string",
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = Color.Black,
+                            shape = CircleShape
+                        )
                 )
             }
             BasicDivider()
@@ -114,9 +118,9 @@ fun InsertRouletteListDialog(
                         dismissRequest.invoke()
                     } else {
                         if(title.value.isEmpty())
-                            Toast.makeText(context, context.getString(R.string.text_warning_list_length),Toast.LENGTH_SHORT).show()
-                        if(rouletteList.size <= 1)
                             Toast.makeText(context, context.getString(R.string.text_warning_title),Toast.LENGTH_SHORT).show()
+                        if(rouletteList.size <= 1)
+                            Toast.makeText(context, context.getString(R.string.text_warning_list_length),Toast.LENGTH_SHORT).show()
                     }
 
                 }
@@ -139,6 +143,6 @@ fun BasicDivider(
 
 @Preview
 @Composable
-fun dialogPreview() {
-    InsertRouletteListDialog(addRouletteList = { title, rouletteList -> }) {}
+fun DialogPreview() {
+    InsertRouletteListDialog(addRouletteList = { _, _ -> }) {}
 }
