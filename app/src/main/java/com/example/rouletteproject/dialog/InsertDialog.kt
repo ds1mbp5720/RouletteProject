@@ -95,7 +95,11 @@ fun InsertRouletteListDialog(
             }
             IconButton(
                 onClick = {
-                    rouletteList.add("")
+                    if (rouletteList.size < 9) {
+                        rouletteList.add("")
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.text_warning_list_max_size), Toast.LENGTH_SHORT).show()
+                    }
             }) {
                 Icon(
                     imageVector = Icons.Filled.Add,
