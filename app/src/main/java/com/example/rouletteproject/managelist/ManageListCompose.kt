@@ -157,7 +157,7 @@ fun RouletteItemBox(
             modifier = modifier
                 .padding(horizontal = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             repeat(rouletteList.size) { index ->
                 RouletteCard(

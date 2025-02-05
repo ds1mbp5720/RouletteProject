@@ -3,6 +3,7 @@ package com.example.rouletteproject.navigation
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.BottomNavigation
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -31,7 +32,6 @@ fun NavigationGraph(
         navController = navController,
         startDestination = BottomNavItem.Roulette.screenRoute
     ) {
-        mainViewModel.getAllList()
         composable(BottomNavItem.Roulette.screenRoute) {
             RouletteScreen(
                 mainViewModel = mainViewModel
@@ -52,7 +52,7 @@ fun BottomNavigation(navController: NavHostController) {
         BottomNavItem.ManageList
     )
 
-    androidx.compose.material.BottomNavigation(
+    BottomNavigation(
         backgroundColor = Color.White,
         contentColor = Color(0xFF3F414E)
     ) {

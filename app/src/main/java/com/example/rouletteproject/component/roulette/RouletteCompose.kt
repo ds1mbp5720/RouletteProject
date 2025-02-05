@@ -71,14 +71,9 @@ fun RouletteScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var resultPosition by remember { mutableIntStateOf(0) }
-        var selectRoulette: RouletteEntity by remember {
+        var selectRoulette: RouletteEntity? by remember {
             mutableStateOf(
                 rouletteLists?.get(0) // todo 0 대신 마지막 선택한 index 활용
-                    ?: RouletteEntity(
-                        id = 0,
-                        title = "Basic",
-                        rouletteData = listOf("a", "b", "c")
-                    )
             )
         }
         // todo add googleAdMob
