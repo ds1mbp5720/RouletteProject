@@ -72,14 +72,16 @@ fun RouletteItem(
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
-            Icon(
-                modifier = Modifier
-                    .clickable {
-                        onDeleteClick.invoke(textState.value)
-                    },
-                imageVector = Icons.Filled.Clear,
-                contentDescription = "search_history_delete"
-            )
+            if(updateEnable) {
+                Icon(
+                    modifier = Modifier
+                        .clickable {
+                            onDeleteClick.invoke(textState.value)
+                        },
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = "search_history_delete"
+                )
+            }
         }
     }
 }

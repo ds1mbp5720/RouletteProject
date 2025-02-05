@@ -135,7 +135,7 @@ fun BasicRoulette(
     val angle: Float by animateFloatAsState(
         targetValue = rotationValue,
         animationSpec = tween(
-            durationMillis = 2000, //todo 시간 설정 별도로 받기 고려
+            durationMillis = 2000, // 드래그 거리 구해서 해당 거리만큼 시간값 변경해보기
             easing = LinearOutSlowInEasing
         ),
         finishedListener = {
