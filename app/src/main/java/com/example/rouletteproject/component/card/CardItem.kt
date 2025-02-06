@@ -1,7 +1,8 @@
 package com.example.rouletteproject.component.card
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,34 +33,41 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CardItem(
     modifier: Modifier = Modifier,
-    text: String,
-    reversed: Boolean
+    item: CardStateItem
 ) {
-    var selected by remember { mutableStateOf(false) }
+    var cardReverse by remember { mutableStateOf(true) }
+    val rotation by animateFloatAsState(
+        targetValue = if (cardReverse) 180f else 0f,
+        animationSpec = tween(500),
+        label = "rotation"
+    )
+    cardReverse = item.isRotated
     Card(
         modifier = modifier
             .size(width = 120.dp, height = 210.dp)
             .padding(8.dp)
-            .clickable {
-                selected = !selected
+            .graphicsLayer {
+                rotationY = rotation
+                cameraDistance = 8f
             }
-            .background(
-                color = if (selected) Color.Yellow
-                else Color.LightGray
-            ),
+            .clickable {
+                cardReverse = !cardReverse
+                item.isSelected = !item.isSelected
+                item.isRotated = !item.isRotated
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
         ),
         border = BorderStroke(
             width = 1.dp,
-            color = if (selected) Color.Yellow
+            color = if (item.isSelected) Color.Yellow
             else Color.Black
         )
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if (reversed) {
+            if (rotation <= 90f) {
                 Text(
-                    text = text,
+                    text = item.text,
                     modifier = Modifier
                         .padding(16.dp)
                         .align(Alignment.Center),
@@ -86,8 +95,7 @@ fun CardItemPreview() {
                 .width(120.dp)
                 .height(210.dp)
                 .padding(8.dp),
-            text = "TEST Card",
-            reversed = true
+            item = CardStateItem(text = "TEST Card")
         )
 
         CardItem(
@@ -95,8 +103,7 @@ fun CardItemPreview() {
                 .width(120.dp)
                 .height(210.dp)
                 .padding(8.dp),
-            text = "TEST Card",
-            reversed = false
+            item = CardStateItem(text = "TEST Card", isRotated = true)
         )
     }
 

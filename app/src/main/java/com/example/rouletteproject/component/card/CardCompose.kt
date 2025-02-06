@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -24,8 +24,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
@@ -40,14 +42,16 @@ import com.example.rouletteproject.dialog.BasicDivider
 fun CardScreen(
     mainViewModel: MainViewModel
 ) {
-    val reverseState = remember { mutableStateOf(true) } // true: 보이기, false: 뒤집기
     val rouletteLists = mainViewModel.rouletteList.observeAsState().value
     var selectRoulette: RouletteEntity? by remember { mutableStateOf(rouletteLists?.get(0)) }
-    val shuffledList = remember { mutableStateListOf<String>() }
+    val shuffledCardStateList = remember { mutableStateListOf<CardStateItem>() }
+    var allCardReverse by remember { mutableStateOf(true) } // false: 전체 앞면, true: 전체 뒷면
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 10.dp)
+            .padding(top = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (rouletteLists?.isNotEmpty() == true) {
             LazyRow(
@@ -56,14 +60,14 @@ fun CardScreen(
                     .padding(horizontal = 5.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                items(rouletteLists) { roulette ->
+                items(rouletteLists) { select ->
                     RouletteItem(
                         modifier = Modifier
                             .clickable {
-                                selectRoulette = roulette
-                                shuffledList.clear()
+                                selectRoulette = select
+                                shuffledCardStateList.clear()
                             },
-                        text = roulette.title,
+                        text = select.title,
                     ) {}
                 }
             }
@@ -75,65 +79,77 @@ fun CardScreen(
         BasicDivider()
         Row(
             modifier = Modifier,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
         ) {
-            Button( // reverse button
+            Button( //all reverse button
                 modifier = Modifier,
                 onClick = {
-                    reverseState.value = !reverseState.value
+                    allCardReverse = false
                 }) {
                 Text(text = stringResource(id = R.string.text_reverse))
             }
             Button( // shuffle button
                 modifier = Modifier,
                 onClick = {
-                    shuffledList.shuffle()
+                    allCardReverse = true
+                    shuffledCardStateList.shuffle().run {
+                        shuffledCardStateList.forEach { item ->
+                            item.isRotated = allCardReverse
+                            item.isSelected = false
+                        }
+                    }
                 }) {
                 Text(text = stringResource(id = R.string.text_shuffle))
             }
         }
         Spacer(modifier = Modifier.height(5.dp))
         selectRoulette?.let {
-            if (shuffledList.isEmpty()) {
-                shuffledList.clear()
-                shuffledList.addAll(it.rouletteData.shuffled())
+            if (shuffledCardStateList.isEmpty()) {
+                it.rouletteData.shuffled().forEach { item ->
+                    shuffledCardStateList.add(
+                        CardStateItem( text = item, isRotated = true, isSelected = false )
+                    )
+                }
+            } else {
+                shuffledCardStateList.forEach { item ->
+                    item.isRotated = allCardReverse
+                }
             }
-            CardListScreen(
-                cardItems = shuffledList,
-                reverseState = reverseState.value
+            CardList(
+                modifier = Modifier,
+                cardItems = shuffledCardStateList,
             )
         }
-
     }
 }
 
 @Composable
-fun CardListScreen(
+fun CardList(
     modifier: Modifier = Modifier,
-    cardItems: List<String>,
-    reverseState: Boolean = false
+    cardItems: List<CardStateItem>
 ) {
-    Column(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .wrapContentWidth(Alignment.CenterHorizontally)
+            .padding(horizontal = 5.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally)
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 5.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            items(cardItems) { cardItem ->
-                CardItem(
-                    text = cardItem,
-                    modifier = Modifier,
-                    reversed = reverseState
-                )
+        items(cardItems) { cardItem ->
+            CardItem(
+                item = cardItem,
+                modifier = Modifier
+            )
 
-            }
         }
     }
+}
+
+@Preview
+@Composable
+fun CardListScreenPreview() {
+    CardList(
+        cardItems = listOf(CardStateItem("1"), CardStateItem("2"))
+    )
 }

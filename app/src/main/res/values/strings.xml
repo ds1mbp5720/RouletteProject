@@ -14,6 +14,6 @@
     <string name="text_warning_list_max_size">리스트는 최대 8개까지 입력 가능합니다.</string>
     <string name="text_warning_list_length">최소 2개 이상 입력해주세요.</string>
     <string name="text_warning_title">리스트명을 입력해주세요.</string>
-    <string name="text_reverse">뒤집기</string>
-    <string name="text_shuffle">석기</string>
+    <string name="text_reverse">전부 뒤집기</string>
+    <string name="text_shuffle">섞기</string>
 </resources>
