@@ -10,7 +10,9 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -62,7 +64,6 @@ import kotlin.math.sin
 
 private val topPadding = 20.dp
 private val iconSize = 80.dp
-private val rouletteSize = 400.dp
 
 /**
  * 룰렛 화면
@@ -160,9 +161,9 @@ fun BasicRoulette(
     ) {
         Card(
             modifier = Modifier
-                .width(rouletteSize + 20.dp)
-                .height(rouletteSize + 20.dp)
-                .padding(top = topPadding),
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .padding(topPadding),
             elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
             shape = CircleShape,
             colors = CardDefaults.cardColors(
@@ -173,9 +174,9 @@ fun BasicRoulette(
         RouletteView(
             modifier = Modifier
                 .align(Alignment.Center)
-                .width(rouletteSize)
-                .height(rouletteSize + topPadding)
-                .padding(top = topPadding)
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .padding(topPadding + 5.dp)
                 .rotate(angle)
                 .pointerInput(Unit) {
                     detectDragGestures( //todo 해당 부분 로직 생각
@@ -206,8 +207,8 @@ fun BasicRoulette(
             modifier = Modifier
                 .size(30.dp)
                 .align(Alignment.TopCenter),
-            imageVector = Icons.Filled.LocationOn,
-            tint = Color.Red,
+            painter = painterResource(id = R.drawable.baseline_south_24),
+            tint = Color.Black,
             contentDescription = "simple_icon"
         )
         // 가운데 룰렛 시작 IconButton
