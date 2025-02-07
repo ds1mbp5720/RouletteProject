@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +25,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,10 +42,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,6 +56,7 @@ import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
 import com.example.rouletteproject.component.RouletteItem
+import com.example.rouletteproject.randomColor
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -66,17 +72,20 @@ fun RouletteScreen(
     mainViewModel: MainViewModel
 ) {
     val rouletteLists = mainViewModel.rouletteList.observeAsState().value
+    val colorList = remember { mutableStateListOf<Color>() }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var resultPosition by remember { mutableIntStateOf(0) }
-        var selectRoulette: RouletteEntity? by remember {
-            mutableStateOf(
-                rouletteLists?.get(0) // todo 0 대신 마지막 선택한 index 활용
-            )
-        }
+        var selectRoulette: RouletteEntity? by remember { mutableStateOf(rouletteLists?.get(0)) }
         // todo add googleAdMob
+        LaunchedEffect(key1 = selectRoulette) {
+            colorList.clear()
+            selectRoulette?.rouletteData?.forEach { _ ->
+                colorList.add(randomColor())
+            }
+        }
         Spacer(modifier = Modifier.height(25.dp))
         ResultTextView(
             modifier = Modifier,
@@ -91,12 +100,15 @@ fun RouletteScreen(
         )
         Spacer(modifier = Modifier.height(35.dp))
         selectRoulette?.let {
-            BasicRoulette(
-                modifier = Modifier,
-                rouletteList = it.rouletteData,
-                selectDegree = 270,
-            ) {
-                resultPosition = it
+            if (it.rouletteData.size == colorList.size){
+                BasicRoulette(
+                    modifier = Modifier,
+                    rouletteList = it.rouletteData,
+                    colorList = colorList,
+                    selectDegree = 270,
+                ) {
+                    resultPosition = it
+                }
             }
         }
         Spacer(modifier = Modifier.height(30.dp))
@@ -111,7 +123,6 @@ fun RouletteScreen(
                         },
                     text = rouletteData.title,
                 ) { //todo 해당 부분은 수정 다이얼로그 방식으로 변경하기
-
                 }
             }
         } else {
@@ -127,37 +138,66 @@ fun RouletteScreen(
 fun BasicRoulette(
     modifier: Modifier = Modifier,
     rouletteList: List<String>,
+    colorList: List<Color>,
     selectDegree: Int,
     centerPosition: (Int) -> Unit, // 270 도 (상단 기준)
 ) {
     var rotationValue by remember { mutableFloatStateOf(0f) }// 회전 각도
-    var rotateIng by remember { mutableStateOf(false) } // 회전 중일때만 결과 값 반환을 위한 회전 동작 구분 boolean 변수
+    var rotating by remember { mutableStateOf(false) } // 회전 중일때만 결과 값 반환을 위한 회전 동작 구분 boolean 변수
     val angle: Float by animateFloatAsState(
         targetValue = rotationValue,
         animationSpec = tween(
-            durationMillis = 2000, // 드래그 거리 구해서 해당 거리만큼 시간값 변경해보기
+            durationMillis = 2000, //todo 드래그 거리 구해서 해당 거리만큼 시간값 변경해보기
             easing = LinearOutSlowInEasing
         ),
         finishedListener = {
-            //todo 룰렛 완료 후 동작
-            rotateIng = false
+            rotating = false
         },
         label = ""
     )
     Box(
         modifier = modifier
     ) {
+        Card(
+            modifier = Modifier
+                .width(rouletteSize + 20.dp)
+                .height(rouletteSize + 20.dp)
+                .padding(top = topPadding),
+            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+            shape = CircleShape,
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+                contentColor = Color.White
+            )
+        ) {}
         RouletteView(
             modifier = Modifier
                 .align(Alignment.Center)
                 .width(rouletteSize)
                 .height(rouletteSize + topPadding)
                 .padding(top = topPadding)
-                .rotate(angle),
+                .rotate(angle)
+                .pointerInput(Unit) {
+                    detectDragGestures( //todo 해당 부분 로직 생각
+                        onDragStart = { offset ->
+                            rotating = true
+                        },
+                        onDrag = { change, dragAmount ->
+                            if (rotating) {
+                                rotationValue = (720..1080) //todo rotationValue 애니메이션 트리거
+                                    .random()
+                                    .toFloat() + angle
+                            }
+                        },
+                        onDragEnd = {}
+                    )
+                }
+            ,
             rouletteList = rouletteList,
+            colorList = colorList,
             rouletteSize = rouletteList.size,
             angle = angle,
-            rotateIng = rotateIng,
+            rotateIng = rotating,
             selectDegree = selectDegree,
             centerPosition = centerPosition
         )
@@ -182,7 +222,7 @@ fun BasicRoulette(
                 )
                 .align(Alignment.Center),
             onClick = {
-                rotateIng = true
+                rotating = true
                 val check: Boolean = rotationValue in Float.MAX_VALUE - 5000f..Float.MAX_VALUE
                 rotationValue = if (check) {
                     0f
@@ -207,6 +247,7 @@ fun BasicRoulette(
 fun RouletteView(
     modifier: Modifier,
     rouletteList: List<String>,
+    colorList: List<Color>,
     rouletteSize: Int,
     angle: Float,
     rotateIng: Boolean,
@@ -223,18 +264,14 @@ fun RouletteView(
             // draw roulette arc
             val startAngle = (sweepAngle * i) // 각도 시작 위치
             drawArc(
-                color = Color.Black,
+                color = Color.White,
                 startAngle = startAngle,
                 sweepAngle = sweepAngle,
                 useCenter = true,
-                style = Stroke(width = 2f)
+                style = Stroke(width = 20f)
             )
             drawArc(
-                color = when (i % 3) {
-                    0 -> Color.White
-                    1 -> Color.LightGray
-                    else -> Color.Gray
-                },
+                color = colorList[i],
                 startAngle = startAngle,
                 sweepAngle = sweepAngle,
                 useCenter = true,
@@ -267,7 +304,8 @@ fun RouletteView(
                     text = rouletteList[i],
                     maxLines = 1,
                     style = TextStyle(
-                        fontSize = 20.sp,
+                        fontSize = 30.sp,
+                        fontStyle = FontStyle.Italic,
                         color = Color.Black,
                     ),
                     topLeft = Offset(
@@ -275,8 +313,8 @@ fun RouletteView(
                         y = y
                     ),
                     size = Size(
-                        width = 70.dp.toPx(),
-                        height = 20.dp.toPx()
+                        width = 90.dp.toPx(),
+                        height = 30.dp.toPx()
                     )
                 )
             }
