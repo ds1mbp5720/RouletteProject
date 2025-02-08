@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,6 +49,9 @@ fun MainScreen() {
     var showInsertDialog by remember { mutableStateOf(false) }
     var showListChoiceDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
+    val mainViewModel: MainViewModel = viewModel()
+    mainViewModel.getAllList()
+    val rouletteLists = mainViewModel.rouletteList.observeAsState().value
     BackPressed()
     Scaffold(
         topBar = {
@@ -70,7 +74,9 @@ fun MainScreen() {
                             contentDescription = "choice_list"
                         )
                     }
-                    ChoiceView(title = "테스트 리스트") {
+                    ChoiceView(title =
+                        rouletteLists?.get(0)?.title ?: "테스트 리스트"
+                    ) {
                         //todo 리스트 선택 Dialog 노출
                         showListChoiceDialog = true
                     }
@@ -108,8 +114,6 @@ fun MainScreen() {
             }
         }
     ) { contentPadding ->
-        val mainViewModel: MainViewModel = viewModel()
-        mainViewModel.getAllList()
         Box(
             modifier = Modifier
                 .fillMaxSize()
