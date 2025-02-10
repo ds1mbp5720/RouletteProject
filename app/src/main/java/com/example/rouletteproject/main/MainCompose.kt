@@ -32,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -61,12 +62,21 @@ import com.example.rouletteproject.navigation.NavigationGraph
 @Composable
 fun MainScreen() {
     val mainViewModel: MainViewModel = viewModel()
+    var firstScreen by remember { mutableStateOf(true) }
     val rouletteLists = mainViewModel.rouletteList.observeAsState().value
     var showDropdownMenu by remember { mutableStateOf(false) }
     var selectedList: RouletteEntity? by remember { mutableStateOf(rouletteLists?.get(0)) }
     var showInsertDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
 
+    if (firstScreen) {
+        LaunchedEffect(key1 = rouletteLists) {
+            if (rouletteLists != null) {
+                selectedList = rouletteLists[0]
+                firstScreen = false
+            }
+        }
+    }
     BackPressed()
     Scaffold(
         topBar = {
