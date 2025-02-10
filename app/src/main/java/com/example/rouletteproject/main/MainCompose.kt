@@ -3,7 +3,6 @@ package com.example.rouletteproject.main
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
@@ -55,6 +53,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
+import com.example.rouletteproject.component.AddIconButton
 import com.example.rouletteproject.dialog.BasicDivider
 import com.example.rouletteproject.dialog.EditListDialog
 import com.example.rouletteproject.dialog.InsertRouletteListDialog
@@ -75,11 +74,17 @@ fun MainScreen() {
     var showEditListDialog by remember { mutableStateOf(false) }
     val navController = rememberNavController()
 
-    if (firstScreen) {
-        LaunchedEffect(key1 = rouletteLists) {
-            if (rouletteLists != null) {
+    LaunchedEffect(key1 = rouletteLists) {
+        if (rouletteLists != null) {
+            if (firstScreen) {
                 selectedList = rouletteLists[0]
                 firstScreen = false
+            }
+            val selectedInRouletteList = rouletteLists.find { it.id == selectedList?.id }
+            if (selectedInRouletteList != null) {
+                if (selectedInRouletteList != selectedList) {
+                    selectedList = selectedInRouletteList
+                }
             }
         }
     }
@@ -155,23 +160,12 @@ fun MainScreen() {
                                 )
                             }
                             BasicDivider(height = 1)
-                            IconButton(
+                            AddIconButton(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .align(Alignment.CenterHorizontally),
-                                onClick = {
-                                    showInsertDialog = true
-                                }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Add,
-                                    contentDescription = "add_list",
-                                    modifier = Modifier
-                                        .border(
-                                            width = 1.dp,
-                                            color = Color.Black,
-                                            shape = CircleShape
-                                        )
-                                )
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
+                                showInsertDialog = true
                             }
                         }
                     }

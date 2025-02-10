@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.rouletteproject.R
+import com.example.rouletteproject.component.AddIconButton
 import com.example.rouletteproject.component.RouletteItem
 
 @Composable
@@ -92,24 +93,12 @@ fun InsertRouletteListDialog(
             } else {
                 Spacer(modifier = Modifier.height(10.dp))
             }
-            IconButton(
-                onClick = {
-                    if (rouletteList.size <= 9) {
-                        rouletteList.add("")
-                    } else {
-                        Toast.makeText(context, context.getString(R.string.text_warning_list_max_size), Toast.LENGTH_SHORT).show()
-                    }
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "add_string",
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = Color.Black,
-                            shape = CircleShape
-                        )
-                )
+            AddIconButton(modifier = Modifier) {
+                if (rouletteList.size <= 9) {
+                    rouletteList.add("")
+                } else {
+                    Toast.makeText(context, context.getString(R.string.text_warning_list_max_size), Toast.LENGTH_SHORT).show()
+                }
             }
             BasicDivider()
             Button(

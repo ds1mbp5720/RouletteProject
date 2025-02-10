@@ -2,12 +2,15 @@ package com.example.rouletteproject.dialog
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
@@ -23,6 +26,7 @@ import androidx.compose.ui.window.Dialog
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
+import com.example.rouletteproject.component.AddIconButton
 import com.example.rouletteproject.component.RouletteItem
 
 @Composable
@@ -81,8 +85,14 @@ fun EditListDialog(
                     )
                 }
             }
+            AddIconButton(modifier = Modifier) {
+                updateList.add("")
+            }
             BasicDivider()
             Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray
+                ),
                 onClick = {
                     if(updateList.size > 1 && title.value.isNotEmpty()) {
                         mainViewModel.update(
@@ -102,7 +112,7 @@ fun EditListDialog(
 
                 }
             ) {
-                Text(text = stringResource(id = R.string.btn_add))
+                Text(text = stringResource(id = R.string.btn_edit))
             }
         }
     }

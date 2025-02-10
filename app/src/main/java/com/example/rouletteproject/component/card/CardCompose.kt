@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -104,9 +105,11 @@ fun CardList(
         columns = GridCells.Fixed(3),
         modifier = modifier
             .fillMaxWidth()
+            .fillMaxHeight()
             .wrapContentWidth(Alignment.CenterHorizontally)
             .padding(horizontal = 5.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally)
+        , verticalArrangement = Arrangement.Center
     ) {
         items(cardItems) { cardItem ->
             CardItem(
