@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.component.card.CardScreen
 import com.example.rouletteproject.component.roulette.RouletteScreen
@@ -27,7 +28,8 @@ import com.example.rouletteproject.managelist.ManageListScreen
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    selectedList: RouletteEntity?
 ) {
     NavHost(
         navController = navController,
@@ -35,12 +37,14 @@ fun NavigationGraph(
     ) {
         composable(BottomNavItem.Roulette.screenRoute) {
             RouletteScreen(
-                mainViewModel = mainViewModel
+                mainViewModel = mainViewModel,
+                selectedList = selectedList
             )
         }
         composable(BottomNavItem.Card.screenRoute) {
             CardScreen(
-                mainViewModel = mainViewModel
+                mainViewModel = mainViewModel,
+                selectedList = selectedList
             )
         }
         composable(BottomNavItem.ManageList.screenRoute) {

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -184,30 +182,9 @@ fun MainScreen() {
         ) {
             NavigationGraph(
                 navController = navController,
-                mainViewModel = mainViewModel
+                mainViewModel = mainViewModel,
+                selectedList = selectedList
             )
-            /*ExposedDropdownMenuBox(
-                expanded = showDropdownMenu,
-                onExpandedChange = {
-                    showDropdownMenu = !showDropdownMenu
-                },
-                modifier = Modifier
-            ) {
-
-                ExposedDropdownMenu(
-                    expanded = showDropdownMenu,
-                    onDismissRequest = { showDropdownMenu = false }) {
-                    rouletteLists?.forEach { item ->
-                        DropdownMenuItem(
-                            text = { Text(text = item.title) },
-                            onClick = {
-                                selectedList = item
-                                showDropdownMenu = false
-                            }
-                        )
-                    }
-                }
-            }*/
             //todo navigation single top 고려
             if (showInsertDialog) {
                 InsertRouletteListDialog(

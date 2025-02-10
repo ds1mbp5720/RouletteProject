@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,8 +17,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -29,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -57,7 +53,6 @@ import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
-import com.example.rouletteproject.component.RouletteItem
 import com.example.rouletteproject.randomColor
 import kotlin.math.cos
 import kotlin.math.sin
@@ -70,20 +65,19 @@ private val iconSize = 80.dp
  */
 @Composable
 fun RouletteScreen(
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    selectedList: RouletteEntity?
 ) {
-    val rouletteLists = mainViewModel.rouletteList.observeAsState().value
     val colorList = remember { mutableStateListOf<Color>() }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         var resultPosition by remember { mutableIntStateOf(0) }
-        var selectRoulette: RouletteEntity? by remember { mutableStateOf(rouletteLists?.get(0)) }
         // todo add googleAdMob
-        LaunchedEffect(key1 = selectRoulette) {
+        LaunchedEffect(key1 = selectedList) {
             colorList.clear()
-            selectRoulette?.rouletteData?.forEach { _ ->
+            selectedList?.rouletteData?.forEach { _ ->
                 colorList.add(randomColor())
             }
         }
@@ -92,15 +86,15 @@ fun RouletteScreen(
             modifier = Modifier,
             result = stringResource(
                 id = R.string.text_result,
-                if (selectRoulette != null) {
-                    selectRoulette!!.rouletteData[resultPosition]
+                if (selectedList != null) {
+                    selectedList!!.rouletteData[resultPosition]
                 } else {
                     stringResource(id = R.string.text_none_select)
                 }
             )
         )
         Spacer(modifier = Modifier.height(35.dp))
-        selectRoulette?.let {
+        selectedList?.let {
             if (it.rouletteData.size == colorList.size){
                 BasicRoulette(
                     modifier = Modifier,
@@ -112,26 +106,6 @@ fun RouletteScreen(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(30.dp))
-        // 저장된 룰렛 리스트 선택 목적 제목 리스트
-        if (rouletteLists?.isNotEmpty() == true) {
-            rouletteLists.forEach { rouletteData ->
-                RouletteItem(
-                    modifier = Modifier
-                        .clickable {
-                            selectRoulette = rouletteData
-                            resultPosition = 0
-                        },
-                    text = rouletteData.title,
-                ) { //todo 해당 부분은 수정 다이얼로그 방식으로 변경하기
-                }
-            }
-        } else {
-            Text(
-                text = stringResource(id = R.string.text_none_list)
-            )
-        }
-
     }
 }
 
