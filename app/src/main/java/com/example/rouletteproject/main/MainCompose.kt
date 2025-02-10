@@ -11,17 +11,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -32,13 +43,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
+import com.example.rouletteproject.R
 import com.example.rouletteproject.dialog.InsertRouletteListDialog
-import com.example.rouletteproject.dialog.ListChoiceDialog
 import com.example.rouletteproject.navigation.BottomNavigation
 import com.example.rouletteproject.navigation.MainDestination
 import com.example.rouletteproject.navigation.NavigationGraph
@@ -46,26 +62,26 @@ import com.example.rouletteproject.navigation.NavigationGraph
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    var showInsertDialog by remember { mutableStateOf(false) }
-    var showListChoiceDialog by remember { mutableStateOf(false) }
-    val navController = rememberNavController()
     val mainViewModel: MainViewModel = viewModel()
-    mainViewModel.getAllList()
     val rouletteLists = mainViewModel.rouletteList.observeAsState().value
+    var showDropdownMenu by remember { mutableStateOf(false) }
+    var selectedList: RouletteEntity? by remember { mutableStateOf(rouletteLists?.get(0)) }
+    var showInsertDialog by remember { mutableStateOf(false) }
+    val navController = rememberNavController()
+
     BackPressed()
     Scaffold(
         topBar = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     IconButton(
                         modifier = Modifier
-                            .padding(start = 10.dp),
+                            .padding(start = 5.dp),
                         onClick = {
                             navController.navigate(MainDestination.MANAGE)
                         }) {
@@ -74,15 +90,61 @@ fun MainScreen() {
                             contentDescription = "choice_list"
                         )
                     }
-                    ChoiceView(title =
-                        rouletteLists?.get(0)?.title ?: "테스트 리스트"
+                    ExposedDropdownMenuBox(
+                        expanded = showDropdownMenu,
+                        onExpandedChange = {
+                            showDropdownMenu = !showDropdownMenu
+                        },
+                        modifier = Modifier
+                            .padding(horizontal = 2.dp, vertical = 10.dp)
                     ) {
-                        //todo 리스트 선택 Dialog 노출
-                        showListChoiceDialog = true
+                        Card(
+                            modifier = Modifier,
+                            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            shape = RoundedCornerShape(corner = CornerSize(16.dp))
+                        ) {
+                            BasicTextField(
+                                value = selectedList?.title ?: stringResource(id = R.string.text_none_list),
+                                onValueChange = {},
+                                readOnly = true,
+                                textStyle = TextStyle(
+                                    fontSize = 24.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center,
+                                ),
+                                singleLine = true,
+                                modifier = Modifier
+                                    .padding(start = 16.dp, top = 6.dp, bottom = 6.dp)
+                                    .menuAnchor(),
+                            ) { innerTextField ->
+                                Row(
+                                    modifier = Modifier.padding(0.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    innerTextField()
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = showDropdownMenu)
+                                }
+                            }
+                        }
+                        ExposedDropdownMenu(
+                            expanded = showDropdownMenu,
+                            onDismissRequest = { showDropdownMenu = false }) {
+                            rouletteLists?.forEach { item ->
+                                DropdownMenuItem(
+                                    text = { Text(text = item.title) },
+                                    onClick = {
+                                        selectedList = item
+                                        showDropdownMenu = false
+                                    }
+                                )
+                            }
+                        }
                     }
                     IconButton(
                         modifier = Modifier
-                            .padding(end = 10.dp),
+                            .padding(end = 5.dp),
                         onClick = {
                             //todo Move to SettingScreen
                         }) {
@@ -98,6 +160,7 @@ fun MainScreen() {
                         .height(1.dp)
                         .fillMaxWidth()
                 )
+
             }
         },
         bottomBar = { BottomNavigation(navController = navController) },
@@ -123,6 +186,28 @@ fun MainScreen() {
                 navController = navController,
                 mainViewModel = mainViewModel
             )
+            /*ExposedDropdownMenuBox(
+                expanded = showDropdownMenu,
+                onExpandedChange = {
+                    showDropdownMenu = !showDropdownMenu
+                },
+                modifier = Modifier
+            ) {
+
+                ExposedDropdownMenu(
+                    expanded = showDropdownMenu,
+                    onDismissRequest = { showDropdownMenu = false }) {
+                    rouletteLists?.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(text = item.title) },
+                            onClick = {
+                                selectedList = item
+                                showDropdownMenu = false
+                            }
+                        )
+                    }
+                }
+            }*/
             //todo navigation single top 고려
             if (showInsertDialog) {
                 InsertRouletteListDialog(
@@ -142,15 +227,8 @@ fun MainScreen() {
                     showInsertDialog = false
                 }
             }
-            if (showListChoiceDialog) {
-                //todo 리스트 선택항목 보여주는 부분
-                ListChoiceDialog() {
-
-                }
-            }
         }
     }
-
 }
 
 @Composable

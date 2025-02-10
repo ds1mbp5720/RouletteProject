@@ -9,7 +9,7 @@
     <string name="btn_add">추가</string>
 
     <string name="text_result">결과: %s</string>
-    <string name="text_none_list">저장된 리스트가 없습니다.</string>
+    <string name="text_none_list">리스트가 없습니다.</string>
     <string name="text_none_select">선택된 리스트가 없습니다.</string>
     <string name="text_warning_list_max_size">리스트는 최대 8개까지 입력 가능합니다.</string>
     <string name="text_warning_list_length">최소 2개 이상 입력해주세요.</string>
