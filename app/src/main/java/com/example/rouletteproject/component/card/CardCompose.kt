@@ -6,10 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -80,7 +79,7 @@ fun CardScreen(
             if (shuffledCardStateList.isEmpty()) {
                 it.rouletteData.shuffled().forEach { item ->
                     shuffledCardStateList.add(
-                        CardStateItem( text = item, isRotated = true, isSelected = false )
+                        CardStateItem(text = item, isRotated = true, isSelected = false)
                     )
                 }
             } else {
@@ -102,14 +101,17 @@ fun CardList(
     cardItems: List<CardStateItem>
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+        columns = GridCells.Fixed(
+            if (cardItems.size % 2 == 0 && cardItems.size < 5) 2
+            else 3
+        ),
         modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-            .padding(horizontal = 5.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterHorizontally)
-        , verticalArrangement = Arrangement.Center
+            .width(
+                if (cardItems.size % 2 == 0 && cardItems.size < 5) 245.dp
+                else 370.dp
+            )
+            .fillMaxHeight(),
+        horizontalArrangement = Arrangement.Center, verticalArrangement = Arrangement.Center
     ) {
         items(cardItems) { cardItem ->
             CardItem(

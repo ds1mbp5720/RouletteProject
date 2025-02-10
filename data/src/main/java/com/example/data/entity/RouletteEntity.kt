@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class RouletteEntity(
     @PrimaryKey( autoGenerate = true )
     val id: Long,
-    val title: String, //todo 선택한거 표시 추가하기 (룰렛, 카드)
+    val title: String,
     val rouletteData: List<String> // 룰렛 요소 list
 )
