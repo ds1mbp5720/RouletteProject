@@ -22,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.component.card.CardScreen
+import com.example.rouletteproject.component.ladder.LadderScreen
 import com.example.rouletteproject.component.roulette.RouletteScreen
 import com.example.rouletteproject.managelist.ManageListScreen
 
@@ -47,7 +48,13 @@ fun NavigationGraph(
                 selectedList = selectedList
             )
         }
-        composable(BottomNavItem.ManageList.screenRoute) {
+        composable(BottomNavItem.Ladder.screenRoute) {
+            LadderScreen(
+                mainViewModel = mainViewModel,
+                selectedList = selectedList
+            )
+        }
+        composable(MainDestination.MANAGE) {
             ManageListScreen(
                 mainViewModel = mainViewModel
             )
@@ -60,7 +67,7 @@ fun BottomNavigation(navController: NavHostController) {
     val items = listOf(
         BottomNavItem.Roulette,
         BottomNavItem.Card,
-        BottomNavItem.ManageList
+        BottomNavItem.Ladder
     )
 
     BottomNavigation(

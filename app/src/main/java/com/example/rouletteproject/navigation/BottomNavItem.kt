@@ -20,10 +20,10 @@ sealed class BottomNavItem(
         screenRoute = MainDestination.CARD,
         page = 1
     )
-    object ManageList : BottomNavItem(
+    object Ladder : BottomNavItem(
         title = R.string.bottom_manage,
-        icon = R.drawable.baseline_format_list_bulleted_24,
-        screenRoute = MainDestination.MANAGE,
+        icon = R.drawable.baseline_pattern_24,
+        screenRoute = MainDestination.LADDER,
         page = 2
     )
 }
