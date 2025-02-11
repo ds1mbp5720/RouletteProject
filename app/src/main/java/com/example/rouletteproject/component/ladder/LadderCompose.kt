@@ -1,5 +1,6 @@
 package com.example.rouletteproject.component.ladder
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -44,7 +45,7 @@ fun LadderScreen(
     selectedList: RouletteEntity?
 ) {
     val numVerticalLines = selectedList?.rouletteData?.size ?: 0 // 세로선 개수
-    val numHorizontalLines = 6 // 가로선 개수 //todo 조정 가능하게 변경 고려
+    val numHorizontalLines = 6 // 가로선 개수 //todo var 변경 고려
     val startPoints = remember { mutableStateListOf<Int>() } // 시작점 리스트
     val endPoints = remember { mutableStateListOf<Int>() } // 도착점 리스트
     var selectedStartPoint by remember { mutableStateOf<Int?>(null) } // 선택된 시작점
@@ -53,6 +54,7 @@ fun LadderScreen(
     var isGameFinished by remember { mutableStateOf(false) } // 게임 종료 여부
     var result by remember { mutableStateOf<Int?>(null) } // 결과
     var isGameReset by remember { mutableStateOf(false) } // 게임 리셋 여부
+    val delayTime = 5000 //todo 추후 var 변경 고려
 
     // 사다리 생성
     val ladder = remember { mutableStateListOf<Pair<Int, Int>>() }
@@ -130,8 +132,12 @@ fun LadderScreen(
             ladder = ladder,
             isGameStarted = isGameStarted,
             currentPoint = currentPoint,
-            selectedStartPoint = selectedStartPoint
-        )
+            selectedStartPoint = selectedStartPoint,
+            delayTime = delayTime
+        ) {
+            Log.e("","애니메이션 종료 체크")
+            isGameFinished = true
+        }
         // 도착지 표시
         Row(modifier = Modifier.fillMaxWidth()) {
             startPoints.forEachIndexed { index, _ ->
@@ -140,7 +146,7 @@ fun LadderScreen(
                         .weight(1f)
                         .size(40.dp)
                         .background(
-                            color = if (result == index) Color.Cyan else Color.LightGray,
+                            color = if (result == index && isGameFinished) Color.Cyan else Color.LightGray,
                             shape = RoundedCornerShape(16.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -171,14 +177,12 @@ fun LadderScreen(
                         }
                     }
                 }
-                //todo delay 주기 고려
                 result = current
-                isGameFinished = true
             }
         }) {
             Text(text = "START")
         }
-        // 게임 결과 todo delay 이후 표시 고려
+        // 게임 결과
         if (isGameFinished && result != null) {
             Text(text = "결과: ${selectedList?.rouletteData?.get(result!!)}", fontSize = 20.sp)
         }
@@ -204,7 +208,9 @@ fun LadderCanvas(
     ladder: List<Pair<Int, Int>>,
     isGameStarted: Boolean,
     currentPoint: Int?,
-    selectedStartPoint: Int?
+    selectedStartPoint: Int?,
+    delayTime: Int,
+    finishEvent: () -> Unit
 ) {
     var lineWidth by remember { mutableFloatStateOf(0f) }
     var lineHeight by remember { mutableFloatStateOf(0f) }
@@ -293,8 +299,11 @@ fun LadderCanvas(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(500.dp)
-                    .align(Alignment.TopCenter)
-            )
+                    .align(Alignment.TopCenter),
+                delayTime = delayTime
+            ){
+                finishEvent.invoke()
+            }
         }
     }
 }
@@ -304,16 +313,27 @@ fun LadderCanvas(
  * path: apply 통한 선들 정보가 담긴 Path
  */
 @Composable
-fun AnimationPath(path: Path, modifier: Modifier, delayTime: Int = 5000) {
+fun AnimationPath(
+    path: Path,
+    modifier: Modifier,
+    delayTime: Int = 5000,
+    finishEvent: () -> Unit
+) {
     val animatedProgress = remember { Animatable(0f) }
     val pathMeasure = remember { PathMeasure() }
     val partialPath = Path() // 그리는 중의 경로 path
+    var onceFinishEvent = true
     pathMeasure.setPath(path, false)
     LaunchedEffect(key1 = path) {
         animatedProgress.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = delayTime) //시간 지정
-        )
+        ) {
+            if (animatedProgress.value == 1.0f && onceFinishEvent) {
+                onceFinishEvent = false
+                finishEvent.invoke()
+            }
+        }
     }
     Canvas(modifier = modifier) {
         val pathLength = pathMeasure.length
