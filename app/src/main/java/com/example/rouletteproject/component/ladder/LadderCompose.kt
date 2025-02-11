@@ -46,8 +46,6 @@ fun LadderScreen(
 ) {
     val numVerticalLines = selectedList?.rouletteData?.size ?: 0 // 세로선 개수
     val numHorizontalLines = 6 // 가로선 개수 //todo var 변경 고려
-    val startPoints = remember { mutableStateListOf<Int>() } // 시작점 리스트
-    val endPoints = remember { mutableStateListOf<Int>() } // 도착점 리스트
     var selectedStartPoint by remember { mutableStateOf<Int?>(null) } // 선택된 시작점
     var currentPoint by remember { mutableStateOf<Int?>(null) } // 현재 위치
     var isGameStarted by remember { mutableStateOf(false) } // 게임 시작 여부
@@ -85,21 +83,6 @@ fun LadderScreen(
         }
     }
 
-    // 시작점 생성
-    LaunchedEffect(isGameReset) {
-        startPoints.clear()
-        for (i in 0 until numVerticalLines) {
-            startPoints.add(i)
-        }
-    } //todo 도착지 분할 제거 고려
-    // 도착점 생성
-    LaunchedEffect(isGameReset) {
-        endPoints.clear()
-        for (i in 0 until numVerticalLines) {
-            endPoints.add(i)
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,7 +91,7 @@ fun LadderScreen(
     ) {
         // 시작점 선택
         Row(modifier = Modifier.fillMaxWidth()) {
-            startPoints.forEachIndexed { index, _ ->
+            selectedList?.rouletteData?.forEachIndexed { index, _ ->
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -125,7 +108,7 @@ fun LadderScreen(
                 }
             }
         }
-        //todo 시작 끝 padding 추가하기
+        //todo 시작 끝 padding 추가하기, 가림막 추가 (isGameFinished = true 일때 제거)
         LadderCanvas(
             numVerticalLines = numVerticalLines,
             numHorizontalLines = numHorizontalLines,
@@ -140,7 +123,7 @@ fun LadderScreen(
         }
         // 도착지 표시
         Row(modifier = Modifier.fillMaxWidth()) {
-            startPoints.forEachIndexed { index, _ ->
+            selectedList?.rouletteData?.forEachIndexed { index, _ ->
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -151,7 +134,7 @@ fun LadderScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "${selectedList?.rouletteData?.get(index)}")
+                    Text(text = selectedList.rouletteData[index])
                 }
             }
         }
