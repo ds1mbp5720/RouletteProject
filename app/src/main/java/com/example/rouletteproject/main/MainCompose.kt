@@ -159,7 +159,7 @@ fun MainScreen() {
                                     }
                                 )
                             }
-                            BasicDivider(height = 1)
+                            BasicDivider(paddingVertical = 1)
                             AddIconButton(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -173,7 +173,7 @@ fun MainScreen() {
                         modifier = Modifier
                             .padding(end = 5.dp),
                         onClick = {
-                            //todo Move to SettingScreen
+                            navController.navigate(MainDestination.SETTING)
                         }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,

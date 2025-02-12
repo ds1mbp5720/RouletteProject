@@ -21,7 +21,7 @@ sealed class BottomNavItem(
         page = 1
     )
     object Ladder : BottomNavItem(
-        title = R.string.bottom_manage,
+        title = R.string.bottom_ladder,
         icon = R.drawable.baseline_pattern_24,
         screenRoute = MainDestination.LADDER,
         page = 2

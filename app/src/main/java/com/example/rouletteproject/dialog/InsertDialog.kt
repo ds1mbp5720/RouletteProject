@@ -125,12 +125,12 @@ fun InsertRouletteListDialog(
 
 @Composable
 fun BasicDivider(
-    height: Int = 4,
+    paddingVertical: Int = 4,
     color: Color = Color.Black
 ) {
-    Spacer(modifier = Modifier.height(height.dp))
+    Spacer(modifier = Modifier.height(paddingVertical.dp))
     Divider(modifier = Modifier.fillMaxWidth(), color = color)
-    Spacer(modifier = Modifier.height(height.dp))
+    Spacer(modifier = Modifier.height(paddingVertical.dp))
 }
 
 @Preview

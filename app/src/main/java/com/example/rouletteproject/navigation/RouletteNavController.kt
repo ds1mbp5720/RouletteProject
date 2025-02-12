@@ -11,6 +11,7 @@ object MainDestination {
     const val CARD = "card"
     const val LADDER = "ladder"
     const val MANAGE = "manage"
+    const val SETTING = "setting"
 }
 
 @Composable

@@ -3,6 +3,7 @@
     <string name="bottom_main">Roulette</string>
     <string name="bottom_card">Card</string>
     <string name="bottom_manage">Manage</string>
+    <string name="bottom_ladder">Ladder</string>
 
     <string name="title_basic_list">제목을 입력해주세요.</string>
     <string name="btn_add_list">리스트 추가</string>

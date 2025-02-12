@@ -73,10 +73,11 @@ fun RouletteScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var resultPosition by remember { mutableIntStateOf(0) }
+        var resultPosition: Int? by remember { mutableStateOf(null) }
         // todo add googleAdMob
         LaunchedEffect(key1 = selectedList) {
             colorList.clear()
+            resultPosition = null
             selectedList?.rouletteData?.forEach { _ ->
                 colorList.add(randomColor())
             }
@@ -87,22 +88,24 @@ fun RouletteScreen(
             result = stringResource(
                 id = R.string.text_result,
                 if (selectedList != null) {
-                    selectedList!!.rouletteData[resultPosition]
+                    if (resultPosition != null){
+                        selectedList.rouletteData[resultPosition!!]
+                    } else ""
                 } else {
                     stringResource(id = R.string.text_none_select_list)
                 }
             )
         )
         Spacer(modifier = Modifier.height(35.dp))
-        selectedList?.let {
-            if (it.rouletteData.size == colorList.size){
+        selectedList?.let { selected ->
+            if (selected.rouletteData.size == colorList.size){
                 BasicRoulette(
                     modifier = Modifier,
-                    rouletteList = it.rouletteData,
+                    rouletteList = selected.rouletteData,
                     colorList = colorList,
                     selectDegree = 270,
-                ) {
-                    resultPosition = it
+                ) { position ->
+                    resultPosition = position
                 }
             }
         }
