@@ -11,10 +11,13 @@
 
     <string name="text_result">결과: %s</string>
     <string name="text_none_list">리스트가 없습니다.</string>
-    <string name="text_none_select">선택된 리스트가 없습니다.</string>
+    <string name="text_none_select_list">선택된 리스트가 없습니다.</string>
+    <string name="text_none_select_item">선택된 항목이 없습니다.</string>
     <string name="text_warning_list_max_size">리스트는 최대 8개까지 입력 가능합니다.</string>
     <string name="text_warning_list_length">최소 2개 이상 입력해주세요.</string>
     <string name="text_warning_title">리스트명을 입력해주세요.</string>
     <string name="text_reverse">전부 뒤집기</string>
     <string name="text_shuffle">섞기</string>
+    <string name="text_start">START</string>
+    <string name="text_reset">RESET</string>
 </resources>

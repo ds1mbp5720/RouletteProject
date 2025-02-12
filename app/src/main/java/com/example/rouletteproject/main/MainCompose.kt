@@ -245,7 +245,7 @@ fun MainScreen() {
                         showEditListDialog = false
                     }
                 } else {
-                    Toast.makeText(context, context.getString(R.string.text_none_select), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.text_none_select_list), Toast.LENGTH_SHORT).show()
                 }
             }
         }

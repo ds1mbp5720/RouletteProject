@@ -89,7 +89,7 @@ fun RouletteScreen(
                 if (selectedList != null) {
                     selectedList!!.rouletteData[resultPosition]
                 } else {
-                    stringResource(id = R.string.text_none_select)
+                    stringResource(id = R.string.text_none_select_list)
                 }
             )
         )

@@ -1,10 +1,10 @@
 package com.example.rouletteproject.component.ladder
 
+import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -40,10 +40,13 @@ import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
+import com.example.rouletteproject.R
 import kotlin.random.Random
 
 @Composable
@@ -51,6 +54,7 @@ fun LadderScreen(
     mainViewModel: MainViewModel,
     selectedList: RouletteEntity?
 ) {
+    val context = LocalContext.current
     val numVerticalLines = selectedList?.rouletteData?.size ?: 0 // 세로선 개수
     val numHorizontalLines = 6 // 가로선 개수 //todo var 변경 고려
     var selectedStartPoint by remember { mutableStateOf<Int?>(null) } // 선택된 시작점
@@ -111,17 +115,62 @@ fun LadderScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
+        ) {
+            // 게임 시작 버튼
+            Button(onClick = {
+                if (selectedStartPoint != null) {
+                    isGameStarted = true
+                    currentPoint = selectedStartPoint
+                    isGameFinished = false
+                    result = null
+                    // 게임 로직 실행
+                    var current = selectedStartPoint!!
+                    for (i in 0 until numHorizontalLines) { //가로선 갯수 만큼 진행
+                        var horizontalLine: Pair<Int, Int>? = null
+                        if (ladder[i].first == current || ladder[i].second == current) { // 가로선 이동 있는지 체크
+                            horizontalLine = ladder[i]
+                        }
+                        if (horizontalLine != null) { // 가로선 로직
+                            current = if (horizontalLine.first == current) {
+                                horizontalLine.second
+                            } else {
+                                horizontalLine.first
+                            }
+                        }
+                    }
+                    result = current
+                } else {
+                    Toast.makeText(context, context.getString(R.string.text_none_select_item), Toast.LENGTH_SHORT).show()
+                }
+            }) {
+                Text(text = stringResource(id = R.string.text_start))
+            }
+            // 게임 재시작 버튼
+            Button(onClick = {
+                resetSetting()
+            }) {
+                Text(text = stringResource(id = R.string.text_reset))
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         // 시작점 선택
         Row(modifier = Modifier.fillMaxWidth()) {
             selectedList?.rouletteData?.forEachIndexed { index, _ ->
                 Box(
-                    modifier = this.borderItemAsCondition(selectedStartPoint == index)
-                        .clickable { if (!isGameStarted) {
-                            selectedStartPoint = index
-                        } },
+                    modifier = this
+                        .borderItemAsCondition(selectedStartPoint == index)
+                        .clickable {
+                            if (!isGameStarted) {
+                                selectedStartPoint = index
+                            }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = "${index + 1}")
@@ -161,50 +210,16 @@ fun LadderScreen(
                 }
             }
         }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
-        ) {
-            // 게임 시작 버튼
-            Button(onClick = {
-                if (selectedStartPoint != null) {
-                    isGameStarted = true
-                    currentPoint = selectedStartPoint
-                    isGameFinished = false
-                    result = null
-                    // 게임 로직 실행
-                    var current = selectedStartPoint!!
-                    for (i in 0 until numHorizontalLines) { //가로선 갯수 만큼 진행
-                        var horizontalLine: Pair<Int, Int>? = null
-                        if (ladder[i].first == current || ladder[i].second == current) { // 가로선 이동 있는지 체크
-                            horizontalLine = ladder[i]
-                        }
-                        if (horizontalLine != null) { // 가로선 로직
-                            current = if (horizontalLine.first == current) {
-                                horizontalLine.second
-                            } else {
-                                horizontalLine.first
-                            }
-                        }
-                    }
-                    result = current
-                }
-            }) {
-                Text(text = "START")
-            }
-            // 게임 재시작 버튼
-            Button(onClick = {
-                resetSetting()
-            }) {
-                Text(text = "RESET")
-            }
-        }
         Spacer(modifier = Modifier.height(8.dp))
         // 게임 결과
         if (isGameFinished && result != null) {
-            Text(text = "결과: ${selectedList?.rouletteData?.get(result!!)}", fontSize = 20.sp)
+            Text(
+                text = stringResource(
+                    id = R.string.text_result,
+                    selectedList?.rouletteData?.get(result!!) ?: ""
+                ),
+                fontSize = 20.sp
+            )
         }
     }
 }
