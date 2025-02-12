@@ -1,14 +1,17 @@
 package com.example.rouletteproject.component.ladder
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +39,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
@@ -90,7 +96,18 @@ fun LadderScreen(
             )
         }
     }
-
+    fun RowScope.borderItemAsCondition(condition: Boolean): Modifier {
+        return Modifier
+            .weight(1f)
+            .size(40.dp)
+            .padding(horizontal = 4.dp)
+            .border(
+                width = 2.dp,
+                color = if (condition) Color.Green
+                else Color.Black,
+                shape = RoundedCornerShape(16.dp)
+            )
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,49 +118,43 @@ fun LadderScreen(
         Row(modifier = Modifier.fillMaxWidth()) {
             selectedList?.rouletteData?.forEachIndexed { index, _ ->
                 Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(40.dp)
-                        .background(
-                            color = if (selectedStartPoint == index) Color.Green
-                            else Color.Gray,
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .clickable {
-                            if (!isGameStarted) {
-                                selectedStartPoint = index
-                            }
-                        },
+                    modifier = this.borderItemAsCondition(selectedStartPoint == index)
+                        .clickable { if (!isGameStarted) {
+                            selectedStartPoint = index
+                        } },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = "${index + 1}")
                 }
             }
         }
-        LadderCanvas(
-            numVerticalLines = numVerticalLines,
-            numHorizontalLines = numHorizontalLines,
-            ladder = ladder,
-            isGameStarted = isGameStarted,
-            currentPoint = currentPoint,
-            selectedStartPoint = selectedStartPoint,
-            delayTime = delayTime
+        Box(
+            contentAlignment = Alignment.Center
         ) {
-            isGameFinished = true
+            LadderCanvas(
+                numVerticalLines = numVerticalLines,
+                numHorizontalLines = numHorizontalLines,
+                ladder = ladder,
+                isGameStarted = isGameStarted,
+                currentPoint = currentPoint,
+                selectedStartPoint = selectedStartPoint,
+                delayTime = delayTime
+            ) {
+                isGameFinished = true
+            }
+            CardFlip(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(450.dp),
+                isCardFlipped = isGameStarted
+            )
         }
-        //todo 가림막 추가 (isGameFinished = true 일때 제거)
 
         // 도착지 표시
         Row(modifier = Modifier.fillMaxWidth()) {
             selectedList?.rouletteData?.forEachIndexed { index, _ ->
                 Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(40.dp)
-                        .background(
-                            color = if (result == index && isGameFinished) Color.Cyan else Color.LightGray,
-                            shape = RoundedCornerShape(16.dp)
-                        ),
+                    modifier = this.borderItemAsCondition(result == index && isGameFinished),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(text = selectedList.rouletteData[index])
@@ -151,7 +162,7 @@ fun LadderScreen(
             }
         }
 
-        Row (
+        Row(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
@@ -167,7 +178,7 @@ fun LadderScreen(
                     var current = selectedStartPoint!!
                     for (i in 0 until numHorizontalLines) { //가로선 갯수 만큼 진행
                         var horizontalLine: Pair<Int, Int>? = null
-                        if (ladder[i].first == current || ladder[i].second == current) {// 가로선 이동 할거 있는지 체크
+                        if (ladder[i].first == current || ladder[i].second == current) { // 가로선 이동 있는지 체크
                             horizontalLine = ladder[i]
                         }
                         if (horizontalLine != null) { // 가로선 로직
@@ -345,5 +356,41 @@ fun AnimationPath(
                 cap = StrokeCap.Round
             )
         )
+    }
+}
+
+@Composable
+fun CardFlip(modifier: Modifier, isCardFlipped: Boolean) {
+    val animationDuration = 700
+    val flipAnimation by animateFloatAsState(
+        targetValue = if (isCardFlipped) 180f else 0f,
+        animationSpec = tween(durationMillis = animationDuration),
+        label = "cardFlip"
+    )
+
+    val alpha by animateFloatAsState(
+        targetValue = if (isCardFlipped) 0f else 1f,
+        animationSpec = tween(durationMillis = animationDuration),
+        label = "cardAlpha"
+    )
+    Box(
+        modifier = modifier
+            .graphicsLayer {
+                rotationY = flipAnimation
+                this.alpha = alpha
+            }
+            .clickable {
+
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxSize(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFFCFC95)
+            )
+        ) {
+        }
     }
 }
