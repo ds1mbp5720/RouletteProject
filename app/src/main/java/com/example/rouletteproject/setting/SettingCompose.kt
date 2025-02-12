@@ -14,6 +14,9 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -73,14 +76,14 @@ fun SettingScreen(
         SettingCategory(title = "사다리") {
             InputIntTextField(
                 title = "이동시간",
-                input = "",
+                default = "0",
                 maxInt = 10
             ) {
 
             }
             InputIntTextField(
                 title = "가로선 갯수",
-                input = "",
+                default = "0",
                 maxInt = 10
             ) {
 
@@ -109,7 +112,8 @@ fun SettingCategory(title: String, content: @Composable () -> Unit
 @Composable
 fun SwitchButton(title: String, unCheckedText: String = "", checkedText: String = "", checked: Boolean, onCheckAction: (Boolean) -> Unit) {
     Row(
-        modifier = Modifier
+        modifier = Modifier,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = title,
@@ -134,29 +138,35 @@ fun RadioGroupButton(title: String, radioList: List<String>, selected: String, o
     Column {
         Text(text = title)
         radioList.forEach {
-            Text(text = it)
-            RadioButton(
-                selected = it == selected ,
-                onClick = { onClick.invoke() }
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = it)
+                RadioButton(
+                    selected = it == selected ,
+                    onClick = { onClick.invoke() }
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputIntTextField(title: String, input: String, maxInt: Int, inputAction: (String) -> Unit) {
+fun InputIntTextField(title: String, default: String, maxInt: Int, inputAction: (String) -> Unit) {
+    val inputText = remember { mutableStateOf(default) }
     Row(
         modifier = Modifier,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = title)
         TextField(
-            value = input,
+            value = inputText.value,
             onValueChange = { result ->
-                if (result.toInt() > maxInt)
-
                 inputAction.invoke(result)
+                inputText.value = result
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
