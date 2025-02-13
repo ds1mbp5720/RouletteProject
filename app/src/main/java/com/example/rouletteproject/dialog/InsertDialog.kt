@@ -2,21 +2,15 @@ package com.example.rouletteproject.dialog
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -64,16 +58,16 @@ fun InsertRouletteListDialog(
                 textStyle = MaterialTheme.typography.titleMedium
             ) { innerTextField ->
                 innerTextField()
-                if(title.value.isEmpty()) {
+                if (title.value.isEmpty()) {
                     Text(
                         text = stringResource(id = R.string.title_basic_list)
                     )
                 }
             }
             BasicDivider()
-            if(rouletteList.size > 0 ) {
+            if (rouletteList.size > 0) {
                 Column(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(horizontal = 10.dp),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
@@ -103,16 +97,16 @@ fun InsertRouletteListDialog(
             BasicDivider()
             Button(
                 onClick = {
-                    if(rouletteList.size > 1 && title.value.isNotEmpty()) {
+                    if (rouletteList.size > 1 && title.value.isNotEmpty()) {
                         addRouletteList.invoke(
                             title.value, rouletteList
                         )
                         dismissRequest.invoke()
                     } else {
-                        if(title.value.isEmpty())
-                            Toast.makeText(context, context.getString(R.string.text_warning_title),Toast.LENGTH_SHORT).show()
-                        if(rouletteList.size <= 1)
-                            Toast.makeText(context, context.getString(R.string.text_warning_list_length),Toast.LENGTH_SHORT).show()
+                        if (title.value.isEmpty())
+                            Toast.makeText(context, context.getString(R.string.text_warning_title), Toast.LENGTH_SHORT).show()
+                        if (rouletteList.size <= 1)
+                            Toast.makeText(context, context.getString(R.string.text_warning_list_length), Toast.LENGTH_SHORT).show()
                     }
 
                 }
