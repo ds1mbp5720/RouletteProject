@@ -62,7 +62,7 @@ fun NavigationGraph(
         }
         composable(MainDestination.SETTING) {
             SettingScreen(
-                mainViewModel = mainViewModel
+                //mainViewModel = mainViewModel
             )
         }
     }

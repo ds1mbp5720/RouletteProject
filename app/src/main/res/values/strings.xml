@@ -17,8 +17,22 @@
     <string name="text_warning_list_max_size">리스트는 최대 8개까지 입력 가능합니다.</string>
     <string name="text_warning_list_length">최소 2개 이상 입력해주세요.</string>
     <string name="text_warning_title">리스트명을 입력해주세요.</string>
+    <string name="text_warning_up">입력 범위를 초과하였습니다.</string>
     <string name="text_reverse">전부 뒤집기</string>
     <string name="text_shuffle">섞기</string>
     <string name="text_start">START</string>
     <string name="text_reset">RESET</string>
+
+    <string name="text_setting_title">앱 설정</string>
+    <string name="text_setting_roulette">룰렛</string>
+    <string name="text_setting_card">카드</string>
+    <string name="text_setting_ladder">사다리 타기</string>
+    <string name="text_activate">활성화</string>
+    <string name="text_deactivate">비활성화</string>
+    <string name="text_setting_first_screen">최초 실행 화면</string>
+    <string name="text_setting_roulette_drag">드래그 회전</string>
+    <string name="text_setting_card_reverse">선택 카드 뒤집기</string>
+    <string name="text_setting_ladder_move_time">이동 시간</string>
+    <string name="text_setting_ladder_row_count">가로선 개수</string>
+
 </resources>
