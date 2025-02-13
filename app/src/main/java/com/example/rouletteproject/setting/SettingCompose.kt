@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.rouletteproject.R
 import com.example.rouletteproject.dialog.BasicDivider
+import com.example.rouletteproject.navigation.MainDestination
 
 @Composable
 fun SettingScreen(
@@ -256,7 +257,7 @@ fun InputIntTextField(title: String, default: Int, maxInt: Int, minimumInt: Int 
                             if (count.intValue + 1 <= maxInt) {
                                 count.intValue += 1
                             } else {
-                                Toast.makeText(context, context.getString(R.string.text_warning_title), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, context.getString(R.string.text_warning_up), Toast.LENGTH_SHORT).show()
                             }
                         }) {
                         Icon(
