@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
+import com.example.rouletteproject.setting.SettingDataStore
 import kotlin.random.Random
 
 @Composable
@@ -56,14 +57,14 @@ fun LadderScreen(
 ) {
     val context = LocalContext.current
     val numVerticalLines = selectedList?.rouletteData?.size ?: 0 // 세로선 개수
-    val numHorizontalLines = 6 // 가로선 개수 //todo var 변경 고려
+    val numHorizontalLines = SettingDataStore.getLadderRowCount()
     var selectedStartPoint by remember { mutableStateOf<Int?>(null) } // 선택된 시작점
     var currentPoint by remember { mutableStateOf<Int?>(null) } // 현재 위치
     var isGameStarted by remember { mutableStateOf(false) } // 게임 시작 여부
     var isGameFinished by remember { mutableStateOf(false) } // 게임 종료 여부
     var result by remember { mutableStateOf<Int?>(null) } // 결과
     var isGameReset by remember { mutableStateOf(false) } // 게임 리셋 여부
-    val delayTime = 3000 //todo 추후 var 변경 고려
+    val delayTime = SettingDataStore.getLadderMoveTime() * 1000
     fun resetSetting() {
         isGameStarted = false
         isGameFinished = false

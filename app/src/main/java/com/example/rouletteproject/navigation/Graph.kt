@@ -25,6 +25,7 @@ import com.example.rouletteproject.component.card.CardScreen
 import com.example.rouletteproject.component.ladder.LadderScreen
 import com.example.rouletteproject.component.roulette.RouletteScreen
 import com.example.rouletteproject.managelist.ManageListScreen
+import com.example.rouletteproject.setting.SettingDataStore
 import com.example.rouletteproject.setting.SettingScreen
 
 @Composable
@@ -35,7 +36,7 @@ fun NavigationGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = BottomNavItem.Roulette.screenRoute //todo 시작 화면 설정 받기
+        startDestination = SettingDataStore.getFirstScreen()
     ) {
         composable(BottomNavItem.Roulette.screenRoute) {
             RouletteScreen(

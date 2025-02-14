@@ -54,6 +54,7 @@ import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
 import com.example.rouletteproject.randomColor
+import com.example.rouletteproject.setting.SettingDataStore
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -156,19 +157,21 @@ fun BasicRoulette(
                 .padding(topPadding + 5.dp)
                 .rotate(angle)
                 .pointerInput(Unit) {
-                    detectDragGestures( //todo 해당 부분 로직 생각
-                        onDragStart = { offset ->
-                            rotating = true
-                        },
-                        onDrag = { change, dragAmount ->
-                            if (rotating) {
-                                rotationValue = (720..1080) //todo rotationValue 애니메이션 트리거
-                                    .random()
-                                    .toFloat() + angle
-                            }
-                        },
-                        onDragEnd = {}
-                    )
+                    if (SettingDataStore.getDragRotate()) {
+                        detectDragGestures( //todo 해당 부분 로직 생각
+                            onDragStart = { offset ->
+                                rotating = true
+                            },
+                            onDrag = { change, dragAmount ->
+                                if (rotating) {
+                                    rotationValue = (720..1080) //todo rotationValue 애니메이션 트리거
+                                        .random()
+                                        .toFloat() + angle
+                                }
+                            },
+                            onDragEnd = {}
+                        )
+                    }
                 }
             ,
             rouletteList = rouletteList,
