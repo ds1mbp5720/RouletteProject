@@ -30,6 +30,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,9 @@ import com.example.rouletteproject.navigation.MainDestination
 fun SettingScreen(
     // mainViewModel: MainViewModel
 ) {
+    val firstScreen = remember { mutableStateOf(SettingDataStore.getFirstScreen()) }
+    val dragCheck = remember { mutableStateOf(SettingDataStore.getDragRotate()) }
+    val cardReverseCheck = remember { mutableStateOf(SettingDataStore.getSelectCardReverse()) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,10 +62,11 @@ fun SettingScreen(
         SettingCategory(title = stringResource(id = R.string.text_setting_title)) {
             RadioGroupButton(
                 title = stringResource(id = R.string.text_setting_first_screen),
-                radioList = listOf("룰렛", "카드", "사다리"),
-                selected = "룰렛",
+                radioList = listOf(MainDestination.ROULETTE, MainDestination.CARD, MainDestination.LADDER),
+                selected = firstScreen.value,
             ) {
-
+                firstScreen.value = it
+                SettingDataStore.setFirstScreen(firstScreen.value)
             }
         }
         SettingCategory(title = stringResource(id = R.string.text_setting_roulette)) {
@@ -69,9 +74,10 @@ fun SettingScreen(
                 title = stringResource(id = R.string.text_setting_roulette_drag),
                 unCheckedText = stringResource(id = R.string.text_deactivate),
                 checkedText = stringResource(id = R.string.text_activate),
-                checked = true
+                checked = dragCheck.value
             ) {
-
+                dragCheck.value = it
+                SettingDataStore.setDragRotate(dragCheck.value)
             }
         }
 
@@ -81,9 +87,10 @@ fun SettingScreen(
                 title = stringResource(id = R.string.text_setting_card_reverse),
                 unCheckedText = stringResource(id = R.string.text_deactivate),
                 checkedText = stringResource(id = R.string.text_activate),
-                checked = true
+                checked = cardReverseCheck.value
             ) {
-
+                cardReverseCheck.value = it
+                SettingDataStore.setSelectCardReverse(cardReverseCheck.value)
             }
         }
 
@@ -91,18 +98,18 @@ fun SettingScreen(
         SettingCategory(title = stringResource(id = R.string.text_setting_ladder)) {
             InputIntTextField(
                 title = stringResource(id = R.string.text_setting_ladder_move_time),
-                default = 0,
+                default = SettingDataStore.getLadderMoveTime(),
                 maxInt = 10,
             ) {
-
+                SettingDataStore.setLadderMoveTime(it)
             }
             InputIntTextField(
                 title = stringResource(id = R.string.text_setting_ladder_row_count),
-                default = 1,
+                default = SettingDataStore.getLadderRowCount(),
                 maxInt = 10,
                 minimumInt = 1
             ) {
-
+                SettingDataStore.setLadderRowCount(it)
             }
         }
     }
@@ -141,7 +148,7 @@ fun SettingCategory(
 }
 
 @Composable
-fun RadioGroupButton(title: String, radioList: List<String>, selected: String, onClick: () -> Unit) {
+fun RadioGroupButton(title: String, radioList: List<String>, selected: String, onClick: (String) -> Unit) {
     Column {
         Text(
             text = title,
@@ -158,14 +165,21 @@ fun RadioGroupButton(title: String, radioList: List<String>, selected: String, o
                 ) {
                     RadioButton(
                         selected = it == selected,
-                        onClick = { onClick.invoke() },
+                        onClick = {
+                            onClick.invoke(it)
+                                  },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = Color.Cyan,
                             unselectedColor = Color.Gray
                         )
                     )
                     Text(
-                        text = it,
+                        text = when(it){
+                            MainDestination.ROULETTE -> stringResource(id = R.string.text_setting_roulette)
+                            MainDestination.CARD -> stringResource(id = R.string.text_setting_card)
+                            MainDestination.LADDER -> stringResource(id = R.string.text_setting_ladder)
+                            else -> it
+                        },
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -246,7 +260,6 @@ fun InputIntTextField(title: String, default: Int, maxInt: Int, minimumInt: Int 
                     readOnly = true,
                     value = count.intValue.toString(),
                     onValueChange = { result ->
-                        inputAction.invoke(result.toInt())
                     },
                     singleLine = true
                 )
@@ -256,6 +269,7 @@ fun InputIntTextField(title: String, default: Int, maxInt: Int, minimumInt: Int 
                         onClick = {
                             if (count.intValue + 1 <= maxInt) {
                                 count.intValue += 1
+                                inputAction.invoke(count.intValue)
                             } else {
                                 Toast.makeText(context, context.getString(R.string.text_warning_up), Toast.LENGTH_SHORT).show()
                             }
@@ -271,6 +285,7 @@ fun InputIntTextField(title: String, default: Int, maxInt: Int, minimumInt: Int 
                         onClick = {
                             if (count.intValue - 1 >= minimumInt) {
                                 count.intValue -= 1
+                                inputAction.invoke(count.intValue)
                             }
                         }) {
                         Icon(
