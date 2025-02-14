@@ -321,7 +321,7 @@ fun ResultTextView(
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             text = result,
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineLarge
+            style = MaterialTheme.typography.headlineMedium
         )
     }
 }

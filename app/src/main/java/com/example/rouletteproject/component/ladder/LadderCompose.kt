@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
+import com.example.rouletteproject.component.roulette.ResultTextView
 import com.example.rouletteproject.setting.SettingDataStore
 import kotlin.random.Random
 
@@ -214,12 +215,12 @@ fun LadderScreen(
         Spacer(modifier = Modifier.height(8.dp))
         // 게임 결과
         if (isGameFinished && result != null) {
-            Text(
-                text = stringResource(
+            ResultTextView(
+                modifier = Modifier,
+                result = stringResource(
                     id = R.string.text_result,
                     selectedList?.rouletteData?.get(result!!) ?: ""
-                ),
-                fontSize = 20.sp
+                )
             )
         }
     }

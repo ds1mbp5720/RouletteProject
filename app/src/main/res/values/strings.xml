@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RouletteProject</string>
+    <string name="app_name">결정이 필요할땐?</string>
     <string name="bottom_main">Roulette</string>
     <string name="bottom_card">Card</string>
     <string name="bottom_manage">Manage</string>
