@@ -21,13 +21,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,12 +44,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
+import com.example.rouletteproject.component.ResultTextView
 import com.example.rouletteproject.randomColor
 import com.example.rouletteproject.setting.SettingDataStore
 import kotlin.math.cos
@@ -89,7 +86,7 @@ fun RouletteScreen(
             result = stringResource(
                 id = R.string.text_result,
                 if (selectedList != null) {
-                    if (resultPosition != null){
+                    if (resultPosition != null) {
                         selectedList.rouletteData[resultPosition!!]
                     } else ""
                 } else {
@@ -99,7 +96,7 @@ fun RouletteScreen(
         )
         Spacer(modifier = Modifier.height(35.dp))
         selectedList?.let { selected ->
-            if (selected.rouletteData.size == colorList.size){
+            if (selected.rouletteData.size == colorList.size) {
                 BasicRoulette(
                     modifier = Modifier,
                     rouletteList = selected.rouletteData,
@@ -172,8 +169,7 @@ fun BasicRoulette(
                             onDragEnd = {}
                         )
                     }
-                }
-            ,
+                },
             rouletteList = rouletteList,
             colorList = colorList,
             rouletteSize = rouletteList.size,
@@ -303,25 +299,3 @@ fun RouletteView(
     }
 }
 
-/**
- * 결과 표시 textView
- */
-@Composable
-fun ResultTextView(
-    modifier: Modifier,
-    result: String
-) {
-    Card(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 3.dp
-        )
-    ) {
-        Text(
-            modifier = modifier
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            text = result,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineMedium
-        )
-    }
-}

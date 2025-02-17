@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
+import com.example.rouletteproject.component.ButtonText
+import com.example.rouletteproject.component.ThemeButton
 
 /**
  * 카드 랜덤 선택 화면
@@ -53,14 +53,15 @@ fun CardScreen(
             modifier = Modifier,
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
         ) {
-            Button( //all reverse button
+            ThemeButton( //all reverse button
                 modifier = Modifier,
                 onClick = {
                     allCardReverse = false
-                }) {
-                Text(text = stringResource(id = R.string.text_reverse))
+                }
+            ) {
+                ButtonText(text = stringResource(id = R.string.text_reverse))
             }
-            Button( // shuffle button
+            ThemeButton( // shuffle button
                 modifier = Modifier,
                 onClick = {
                     allCardReverse = true
@@ -70,8 +71,9 @@ fun CardScreen(
                             item.isSelected = false
                         }
                     }
-                }) {
-                Text(text = stringResource(id = R.string.text_shuffle))
+                }
+            ) {
+                ButtonText(text = stringResource(id = R.string.text_shuffle))
             }
         }
         Spacer(modifier = Modifier.height(5.dp))

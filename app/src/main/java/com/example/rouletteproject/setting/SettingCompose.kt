@@ -169,7 +169,7 @@ fun RadioGroupButton(title: String, radioList: List<String>, selected: String, o
                             onClick.invoke(it)
                                   },
                         colors = RadioButtonDefaults.colors(
-                            selectedColor = Color.Cyan,
+                            selectedColor = MaterialTheme.colorScheme.primary,
                             unselectedColor = Color.Gray
                         )
                     )
@@ -214,7 +214,7 @@ fun SwitchButton(title: String, unCheckedText: String = "", checkedText: String 
                     onCheckAction.invoke(checked)
                 },
                 colors = SwitchDefaults.colors(
-                    checkedTrackColor = Color.Cyan
+                    checkedTrackColor = MaterialTheme.colorScheme.primary
                 )
             )
             Text(

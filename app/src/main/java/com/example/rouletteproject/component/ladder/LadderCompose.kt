@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -43,11 +42,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
-import com.example.rouletteproject.component.roulette.ResultTextView
+import com.example.rouletteproject.component.ButtonText
+import com.example.rouletteproject.component.ResultTextView
+import com.example.rouletteproject.component.ThemeButton
 import com.example.rouletteproject.setting.SettingDataStore
 import kotlin.random.Random
 
@@ -126,39 +126,45 @@ fun LadderScreen(
             horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
         ) {
             // 게임 시작 버튼
-            Button(onClick = {
-                if (selectedStartPoint != null) {
-                    isGameStarted = true
-                    currentPoint = selectedStartPoint
-                    isGameFinished = false
-                    result = null
-                    // 게임 로직 실행
-                    var current = selectedStartPoint!!
-                    for (i in 0 until numHorizontalLines) { //가로선 갯수 만큼 진행
-                        var horizontalLine: Pair<Int, Int>? = null
-                        if (ladder[i].first == current || ladder[i].second == current) { // 가로선 이동 있는지 체크
-                            horizontalLine = ladder[i]
-                        }
-                        if (horizontalLine != null) { // 가로선 로직
-                            current = if (horizontalLine.first == current) {
-                                horizontalLine.second
-                            } else {
-                                horizontalLine.first
+            ThemeButton( //all reverse button
+                modifier = Modifier,
+                onClick = {
+                    if (selectedStartPoint != null) {
+                        isGameStarted = true
+                        currentPoint = selectedStartPoint
+                        isGameFinished = false
+                        result = null
+                        // 게임 로직 실행
+                        var current = selectedStartPoint!!
+                        for (i in 0 until numHorizontalLines) { //가로선 갯수 만큼 진행
+                            var horizontalLine: Pair<Int, Int>? = null
+                            if (ladder[i].first == current || ladder[i].second == current) { // 가로선 이동 있는지 체크
+                                horizontalLine = ladder[i]
+                            }
+                            if (horizontalLine != null) { // 가로선 로직
+                                current = if (horizontalLine.first == current) {
+                                    horizontalLine.second
+                                } else {
+                                    horizontalLine.first
+                                }
                             }
                         }
+                        result = current
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.text_none_select_item), Toast.LENGTH_SHORT).show()
                     }
-                    result = current
-                } else {
-                    Toast.makeText(context, context.getString(R.string.text_none_select_item), Toast.LENGTH_SHORT).show()
                 }
-            }) {
-                Text(text = stringResource(id = R.string.text_start))
+            ) {
+                ButtonText(text = stringResource(id = R.string.text_start))
             }
             // 게임 재시작 버튼
-            Button(onClick = {
-                resetSetting()
-            }) {
-                Text(text = stringResource(id = R.string.text_reset))
+            ThemeButton(
+                modifier = Modifier,
+                onClick = {
+                    resetSetting()
+                }
+            ) {
+                ButtonText(text = stringResource(id = R.string.text_reset))
             }
         }
         Spacer(modifier = Modifier.height(8.dp))

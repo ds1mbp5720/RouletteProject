@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,7 +29,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,6 +55,7 @@ import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
 import com.example.rouletteproject.component.AddIconButton
+import com.example.rouletteproject.component.ThemeIconButton
 import com.example.rouletteproject.dialog.BasicDivider
 import com.example.rouletteproject.dialog.EditListDialog
 import com.example.rouletteproject.dialog.InsertRouletteListDialog
@@ -98,13 +100,15 @@ fun MainScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    IconButton(
-                        modifier = Modifier
-                            .padding(start = 5.dp),
+                    ThemeIconButton(
+                        modifier = Modifier,
                         onClick = {
                             navController.navigate(MainDestination.MANAGE)
                         }) {
                         Icon(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(start = 4.dp),
                             imageVector = Icons.Filled.List,
                             contentDescription = "choice_list"
                         )
@@ -169,13 +173,15 @@ fun MainScreen() {
                             }
                         }
                     }
-                    IconButton(
-                        modifier = Modifier
-                            .padding(end = 5.dp),
+                    ThemeIconButton(
+                        modifier = Modifier,
                         onClick = {
                             navController.navigate(MainDestination.SETTING)
                         }) {
                         Icon(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(end = 4.dp),
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "app_setting"
                         )
@@ -194,6 +200,7 @@ fun MainScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary,
                 onClick = {
                     showEditListDialog = true
                 }) {

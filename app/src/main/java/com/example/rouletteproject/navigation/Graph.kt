@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -96,7 +96,7 @@ fun BottomNavigation(navController: NavHostController) {
                     )
                 },
                 label = { Text(stringResource(id = item.title), fontSize = 9.sp) },
-                selectedContentColor = MaterialTheme.colors.primary,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
                 unselectedContentColor = Color.Gray,
                 selected = currentRoute == item.screenRoute,
                 alwaysShowLabel = false,
