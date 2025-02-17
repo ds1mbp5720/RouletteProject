@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.example.data.entity.RouletteEntity
 import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
@@ -103,7 +104,15 @@ fun MainScreen() {
                     ThemeIconButton(
                         modifier = Modifier,
                         onClick = {
+                            if (navController.currentDestination?.route == MainDestination.MANAGE || navController.currentDestination?.route == MainDestination.SETTING)
+                                navController.popBackStack()
                             navController.navigate(MainDestination.MANAGE)
+                            navOptions {
+                                launchSingleTop = true
+                                popUpTo(MainDestination.SETTING) {
+                                    inclusive = true
+                                }
+                            }
                         }) {
                         Icon(
                             modifier = Modifier
@@ -176,7 +185,15 @@ fun MainScreen() {
                     ThemeIconButton(
                         modifier = Modifier,
                         onClick = {
+                            if (navController.currentDestination?.route == MainDestination.MANAGE || navController.currentDestination?.route == MainDestination.SETTING)
+                                navController.popBackStack()
                             navController.navigate(MainDestination.SETTING)
+                            navOptions {
+                                launchSingleTop = true
+                                popUpTo(MainDestination.MANAGE) {
+                                    inclusive = true
+                                }
+                            }
                         }) {
                         Icon(
                             modifier = Modifier
