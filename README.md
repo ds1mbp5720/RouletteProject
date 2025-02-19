@@ -25,13 +25,22 @@
 ------------
 ### 실행사진(업데이트 예정)
 1. 룰렛
+   
+https://github.com/user-attachments/assets/ee898fe1-ff7c-4a3f-a91c-1e3c39f479de  
 
-2. 카드뽑기
+2. 카드뽑기     
 
-3. 사다리타기
+https://github.com/user-attachments/assets/5ce44058-212b-4ad0-b9dd-af7c6d737bf3
 
-4. 환경설정
-  
-5. 리스트 관리 
+3. 사다리타기    
 
+https://github.com/user-attachments/assets/a17c88b2-f459-405f-afc6-54c84cdae7c3
+
+4. 환경설정    
+   
+  ![Image](https://github.com/user-attachments/assets/42dd9adf-f34d-46e2-85b8-1ee11d14e450)
+
+5. 리스트 관리
+       
+![Image](https://github.com/user-attachments/assets/f81a33a2-5e1d-4098-a8f1-25757e481f37)
 
