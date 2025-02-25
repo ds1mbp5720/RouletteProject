@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.rouletteproject.R
+import com.example.rouletteproject.setting.SettingDataStore
 
 @Composable
 fun CardItem(
@@ -52,9 +53,12 @@ fun CardItem(
                 cameraDistance = 8f
             }
             .clickable {
+                if (SettingDataStore.getSelectCardReverse()) {
+                    item.isRotated = !item.isRotated
+                }
                 cardReverse = !cardReverse
                 item.isSelected = !item.isSelected
-                item.isRotated = !item.isRotated
+
             },
         colors = CardDefaults.cardColors(
             containerColor = Color.White,
