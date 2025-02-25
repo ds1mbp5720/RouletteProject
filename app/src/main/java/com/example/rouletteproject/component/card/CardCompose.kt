@@ -1,5 +1,6 @@
 package com.example.rouletteproject.component.card
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import com.example.rouletteproject.MainViewModel
 import com.example.rouletteproject.R
 import com.example.rouletteproject.component.ButtonText
 import com.example.rouletteproject.component.ThemeButton
+import kotlinx.coroutines.delay
 
 /**
  * 카드 랜덤 선택 화면
@@ -42,6 +44,19 @@ fun CardScreen(
     var allCardReverse by remember { mutableStateOf(true) } // false: 전체 앞면, true: 전체 뒷면
     LaunchedEffect(key1 = selectedList) {
         shuffledCardStateList.clear()
+    }
+    LaunchedEffect(key1 = allCardReverse) {
+        // 전체 뒷면에 따른 값 변경
+        // 섞을 경우 변경된 리스트가 잠깐 노출되어 뒤집히고 리스트 변경되도록 delay 추가
+        delay(500)
+        if (allCardReverse) {
+            shuffledCardStateList.shuffle().run {
+                shuffledCardStateList.forEach { item ->
+                    item.isRotated = allCardReverse
+                    item.isSelected = false
+                }
+            }
+        }
     }
     Column(
         modifier = Modifier
@@ -65,12 +80,6 @@ fun CardScreen(
                 modifier = Modifier,
                 onClick = {
                     allCardReverse = true
-                    shuffledCardStateList.shuffle().run {
-                        shuffledCardStateList.forEach { item ->
-                            item.isRotated = allCardReverse
-                            item.isSelected = false
-                        }
-                    }
                 }
             ) {
                 ButtonText(text = stringResource(id = R.string.text_shuffle))

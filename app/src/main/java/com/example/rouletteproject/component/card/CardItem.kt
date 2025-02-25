@@ -38,12 +38,14 @@ fun CardItem(
     item: CardStateItem
 ) {
     var cardReverse by remember { mutableStateOf(true) }
+    var cardSelect by remember { mutableStateOf(true) }
     val rotation by animateFloatAsState(
         targetValue = if (cardReverse) 180f else 0f,
         animationSpec = tween(500),
         label = "rotation"
     )
     cardReverse = item.isRotated
+    cardSelect = item.isSelected
     Card(
         modifier = modifier
             .size(width = 120.dp, height = 210.dp)
@@ -54,9 +56,10 @@ fun CardItem(
             }
             .clickable {
                 if (SettingDataStore.getSelectCardReverse()) {
+                    cardReverse = !cardReverse
                     item.isRotated = !item.isRotated
                 }
-                cardReverse = !cardReverse
+                cardSelect = !cardSelect
                 item.isSelected = !item.isSelected
 
             },
@@ -65,7 +68,7 @@ fun CardItem(
         ),
         border = BorderStroke(
             width = 1.dp,
-            color = if (item.isSelected) Color.Yellow
+            color = if (cardSelect) Color.Yellow
             else Color.Black
         )
     ) {
